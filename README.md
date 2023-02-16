@@ -1,6 +1,7 @@
 # JayStargram
 
-인스타그램클론
+#인스타그램클론
+
 프론트: React & TypeScript (Redux-Toolkit, Query?)
 벡엔드: FireBase (인증, DB, Store, Hosting)
 
