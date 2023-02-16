@@ -1,67 +1,37 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-=======
 # JayStargram
 
 #인스타그램클론
 
-프론트: 
-React & TypeScript 
-(Redux-Toolkit, Query?)
+사전계획 ---02/16---
+프론트:
+React & TypeScript
+(Redux, Redux-Toolkit, RTK-Query?)
+고민(Firebase 와 잘 맞는가?)
 
-벡엔드: 
-FireBase 
+벡엔드:
+FireBase
 (인증, DB, Store, Hosting)
 
-기능: 
-회원가입/로그인/유저인증/유저프로필
-
-포스트작성(크롭기능)/조회/수정/댓글작성
-
+기능:
+회원가입/로그인/유저인증/유저프로필/친구기능
+포스트작성(크롭기능)/조회/수정/댓글작성/즐겨찾기
 메세지 전송/푸쉬/채팅/무시 기능
->>>>>>> 37bf83e2dae555b8d2b42559027f27f04b90894a
+
+React 구성계획
+무엇을 컴포넌트 모듈화 할것인가?
+
+폴더 구조
+src
+index.tsx
+App.tsx
+Router.tsx
+
+---api
+------api 데이터 통신 관련 ts 파일
+
+---components
+------common
+------page
+------각기능별폴더
+
+---redux
