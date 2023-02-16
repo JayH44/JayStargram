@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -44,3 +45,23 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+=======
+# JayStargram
+
+#인스타그램클론
+
+프론트: 
+React & TypeScript 
+(Redux-Toolkit, Query?)
+
+벡엔드: 
+FireBase 
+(인증, DB, Store, Hosting)
+
+기능: 
+회원가입/로그인/유저인증/유저프로필
+
+포스트작성(크롭기능)/조회/수정/댓글작성
+
+메세지 전송/푸쉬/채팅/무시 기능
+>>>>>>> 37bf83e2dae555b8d2b42559027f27f04b90894a
