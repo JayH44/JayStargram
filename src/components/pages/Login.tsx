@@ -2,15 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import Form from '../common/Form';
 import { FcGoogle } from 'react-icons/fc';
-import { googleLogin } from '../../api/firebaseapi';
 import { useNavigate } from 'react-router-dom';
+import { googleLogin } from '../../api/firebaseapi';
 
 export type InputsInitial = {
   [index: string]: string;
 };
 
-const SignUpData = [
-  { type: 'name', text: 'name', placeholder: '이름을 입력해주세요' },
+const LoginData = [
   {
     type: 'text',
     text: 'email',
@@ -24,32 +23,31 @@ const SignUpData = [
 ];
 
 const InputInitialData = {
-  name: ``,
   email: ``,
   password: ``,
 };
 
-function SignUp() {
+function Login() {
   const navigate = useNavigate();
 
-  //구글 회원가입
+  //구글 로그인
   const handleGoogle = () => {
     googleLogin().then((res) => {
       console.log('result', res);
-      alert('회원가입에 성공하셨습니다, 로그인페이지로 이동합니다.');
-      navigate('/login');
+      alert('환영합니다.');
+      navigate('/home');
     });
   };
   return (
     <Container>
       <Form
-        title='SignUp'
-        InputData={SignUpData}
+        title='Login'
+        InputData={LoginData}
         InputInitialData={InputInitialData}
       />
       <GoogleLogin onClick={handleGoogle}>
         <FcGoogle />
-        <p>Subscribe with Google</p>
+        <p>Login with Google</p>
       </GoogleLogin>
     </Container>
   );
@@ -74,4 +72,4 @@ const GoogleLogin = styled.div`
   cursor: pointer;
 `;
 
-export default SignUp;
+export default Login;

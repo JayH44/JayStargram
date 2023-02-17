@@ -9,6 +9,7 @@ type ButtonProps = {
   width?: string;
   height?: string;
   round?: boolean;
+  handleOnclick?: () => void;
 };
 
 type ButtonConatinerProps = Omit<ButtonProps, 'text'>;
@@ -21,6 +22,7 @@ function Button({
   width,
   height,
   round,
+  handleOnclick,
 }: ButtonProps) {
   return (
     <Container
@@ -30,6 +32,7 @@ function Button({
       width={width}
       height={height}
       round={round}
+      onClick={handleOnclick}
     >
       {text}
     </Container>
