@@ -2,6 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,11 +23,16 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+//인증관련
 export const auth = getAuth(app);
 auth.languageCode = 'it';
-
-export const dbFirebase = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   login_hint: 'user@example.com',
 });
+
+//dB관련
+export const dbFirebase = getFirestore(app);
+
+//스토리지관련
+export const storageFirebase = getStorage(app);

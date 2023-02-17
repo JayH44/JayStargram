@@ -6,7 +6,8 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
+import { ref } from 'firebase/storage';
+import { auth, googleProvider, storageFirebase } from '../firebase';
 
 export const signUpFirebase = async (
   name: string,
@@ -79,6 +80,10 @@ export const googleLogin = async () => {
     const credential = GoogleAuthProvider.credentialFromError(error);
     console.log(error);
   }
+};
+
+export const uploadFirebase = async (file: File, location: string) => {
+  const storageRef = ref(storageFirebase, location);
 };
 
 // export const getCurrentUser = async () => {
