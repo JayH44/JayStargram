@@ -10,6 +10,7 @@ declare module 'styled-components' {
     comHeight: string;
     pageSmallWidth?: string;
     pageSmallHeight?: string;
+    pageWidth?: string;
     pageHeight?: string;
     pageMaxHeight?: string;
   }

@@ -6,7 +6,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { auth, provider } from '../firebase';
+import { auth, googleProvider } from '../firebase';
 
 export const signUpFirebase = async (
   name: string,
@@ -65,7 +65,7 @@ export const logoutFirebase = () => {
 
 export const googleLogin = async () => {
   try {
-    const result = await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, googleProvider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
     if (credential) {
       const token = credential.accessToken;
