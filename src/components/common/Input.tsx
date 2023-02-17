@@ -39,8 +39,8 @@ const Wrapper = styled.div<InputBoxProps>`
     width: ${({ theme, width }) => width || theme.comWidth};
     height: ${({ theme, height }) => height || theme.comHeight};
     padding: 0 10px;
-    background: none;
     outline: none;
+    background-color: transparent;
   }
 `;
 

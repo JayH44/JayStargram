@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import Form from '../common/Form';
 
 type SignUpProps = {};
+export type InputsInitial = {
+  [index: string]: string;
+};
 
 const SignUpData = [
   { type: 'name', text: 'name', placeholder: '이름을 입력해주세요' },
@@ -18,10 +21,20 @@ const SignUpData = [
   },
 ];
 
+const InputInitialData = {
+  name: ``,
+  email: ``,
+  password: ``,
+};
+
 function SignUp() {
   return (
     <Container>
-      <Form title='SignUp' InputData={SignUpData} />
+      <Form
+        title='SignUp'
+        InputData={SignUpData}
+        InputInitialData={InputInitialData}
+      />
     </Container>
   );
 }

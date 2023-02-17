@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { InputsInitial } from '../pages/SignUp';
 import Button from './Button';
 import Input from './Input';
 
@@ -12,23 +13,11 @@ type InputProps = {
 type FormProps = {
   title: string;
   InputData: InputProps[];
+  InputInitialData: InputsInitial;
 };
 
-type InputsInitial = {
-  [index: string]: string;
-};
-
-function Form({ title, InputData }: FormProps) {
-  const [inputs, setInputs] = useState<InputsInitial>({});
-
-  useEffect(() => {
-    InputData.forEach((input) => {
-      setInputs((inputs) => ({
-        ...inputs,
-        [input.text]: '',
-      }));
-    });
-  }, [InputData]);
+function Form({ title, InputData, InputInitialData }: FormProps) {
+  const [inputs, setInputs] = useState(InputInitialData);
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -54,7 +43,7 @@ function Form({ title, InputData }: FormProps) {
           />
         ))}
       </InputsContainer>
-      <Button text={title} type='button'></Button>
+      <Button text={title} type='button' round></Button>
     </Container>
   );
 }

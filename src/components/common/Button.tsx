@@ -8,11 +8,20 @@ type ButtonProps = {
   color?: string;
   width?: string;
   height?: string;
+  round?: boolean;
 };
 
 type ButtonConatinerProps = Omit<ButtonProps, 'text'>;
 
-function Button({ text, type, bgColor, color, width, height }: ButtonProps) {
+function Button({
+  text,
+  type,
+  bgColor,
+  color,
+  width,
+  height,
+  round,
+}: ButtonProps) {
   return (
     <Container
       type={type}
@@ -20,6 +29,7 @@ function Button({ text, type, bgColor, color, width, height }: ButtonProps) {
       color={color}
       width={width}
       height={height}
+      round={round}
     >
       {text}
     </Container>
@@ -32,11 +42,13 @@ const Container = styled.button<ButtonConatinerProps>`
   width: ${({ theme, width }) => width || theme.comWidth};
   height: ${({ theme, height }) => height || theme.comHeight};
   font-weight: 600;
+  border-radius: ${({ round }) => (round ? '5px' : 0)};
 `;
 
 Button.defaultProps = {
   text: '',
   type: 'button',
+  round: false,
 };
 
 export default Button;
