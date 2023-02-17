@@ -69,6 +69,7 @@ function Form({ title, InputData, InputInitialData }: FormProps) {
 
     loginFirebase(email, password).then((res) => {
       alert(`환영합니다. ${res.displayName}님`);
+      navigate('/home');
     });
   };
 

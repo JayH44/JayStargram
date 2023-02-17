@@ -1,26 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useGetUserQuery } from '../../redux/user';
+import { logoutFirebase } from '../../api/firebaseapi';
+import { auth } from '../../firebase';
+import { useGetCurrentUserQuery } from '../../redux/user';
 import ImgCrop from '../common/ImgCrop';
 
 type ProfileProps = {};
 
 function Profile() {
-  const { data, isLoading, isError } = useGetUserQuery();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
+  const user = auth.currentUser;
+  const photoURL = user?.photoURL || undefined;
+  const handleLogout = () => {
+    logoutFirebase();
+    window.location.reload(); 
   }
-
-  if (isError) {
-    return <div>Error</div>;
-  }
-
   return (
     <Container>
       <h1>Profile</h1>
-      <p>Email: {data?.email}</p>
-      <p>UID: {data?.uid}</p>
+      {photoURL && <img src={photoURL} alt="profile" />}
+      <p>Email: {user?.email}</p>
+      <p>UID: {user?.uid}</p>
+      <button onClick={handleLogout}>Logout</button>
       <ImgCrop />
     </Container>
   );

@@ -1,22 +1,17 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header';
-import { useGetUserQuery } from '../../redux/user';
+import { auth } from '../../firebase';
 
 type MainProps = {};
 
 function Main() {
-  const { data, isLoading, isError } = useGetUserQuery();
-  const navigate = useNavigate();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
+  const user = auth.currentUser;
+  
+  if (!user) {
     alert('유저정보가 없습니다. 로그인창으로 이동합니다.');
-    navigate('/login');
+    return <Navigate to='/login' />
   }
 
   return (
