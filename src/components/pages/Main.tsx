@@ -9,10 +9,10 @@ type MainProps = {};
 function Main() {
   const user = auth.currentUser;
   
-  if (!user) {
-    alert('유저정보가 없습니다. 로그인창으로 이동합니다.');
-    return <Navigate to='/login' />
-  }
+  // if (!user) {
+  //   alert('유저정보가 없습니다. 로그인창으로 이동합니다.');
+  //   return <Navigate to='/login' />
+  // }
 
   return (
     <>

@@ -6,7 +6,12 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { ref } from 'firebase/storage';
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from 'firebase/storage';
 import { auth, googleProvider, storageFirebase } from '../firebase';
 
 export const signUpFirebase = async (
@@ -83,19 +88,15 @@ export const googleLogin = async () => {
 };
 
 export const uploadFirebase = async (file: File, location: string) => {
-  const storageRef = ref(storageFirebase, location);
-};
+  const { name, type } = file;
+  const fileRef = ref(storageFirebase, 'images/' + location + '/' + name);
 
-// export const getCurrentUser = async () => {
-//   onAuthStateChanged(auth, (user) => {
-//     if (user) {
-//       // User is signed in, see docs for a list of available properties
-//       // https://firebase.google.com/docs/reference/js/firebase.User
-//       const uid = user.uid;
-//       // ...
-//     } else {
-//       // User is signed out
-//       // ...
-//     }
-//   });
-// };
+  const metadata = {
+    contentType: type,
+  };
+
+  await uploadBytes(fileRef, file, metadata);
+
+  const url = await getDownloadURL(fileRef);
+  return url;
+};

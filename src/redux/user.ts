@@ -1,11 +1,12 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import 'firebase/auth';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { auth, dbFirebase } from '../firebase';
+import { uploadBytes } from 'firebase/storage';
+import { auth, dbFirebase, storageFirebase } from '../firebase';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  tagTypes: ["authApi"],
+  tagTypes: ['authApi'],
   baseQuery: fakeBaseQuery(),
   endpoints: (builder) => ({
     getCurrentUser: builder.query({
@@ -18,7 +19,7 @@ export const authApi = createApi({
           throw new Error('유저정보가 없습니다.');
         }
       },
-      providesTags: ["authApi"],
+      providesTags: ['authApi'],
     }),
   }),
 });
@@ -36,16 +37,14 @@ type Post = {
 type Posts = Post[];
 
 export const postsApi = createApi({
-  reducerPath: "posts",
+  reducerPath: 'posts',
+  tagTypes: ['Post'],
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["Post"],
   endpoints: (builder) => ({
     fetchPosts: builder.query<Posts, void>({
-      // since we are using fakeBaseQuery we use queryFn
       async queryFn() {
         try {
-          // posts is the collection name
-          const blogRef = collection(dbFirebase, "posts");
+          const blogRef = collection(dbFirebase, 'posts');
           const querySnaphot = await getDocs(blogRef);
           let posts: Post[] = [];
           querySnaphot?.forEach((doc) => {
@@ -56,20 +55,19 @@ export const postsApi = createApi({
           return { error };
         }
       },
-      providesTags: ["Post"],
+      providesTags: ['Post'],
     }),
-    //***************SINGLE ITEM FETCHING*************** */
     fetchSinglePost: builder.query({
       async queryFn(id) {
         try {
-          const docRef = doc(dbFirebase, "posts", id);
+          const docRef = doc(dbFirebase, 'posts', id);
           const snapshot = await getDoc(docRef);
           return { data: snapshot.data() };
         } catch (error) {
           return { error };
         }
       },
-      providesTags: ["Post"],
+      providesTags: ['Post'],
     }),
   }),
 });
