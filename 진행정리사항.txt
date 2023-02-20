@@ -80,6 +80,8 @@ Firebase 관리를 위해 React Query 로 변경
 2. 조건분기 안됨
 3. 리액트 커스텀훅이 아닌 임의의 함수안에서 안됨
 
-
 Input 에서 파일 취소시 or 동일파일선택시
-onchange 이벤트를 어떻게?
+onchange 이벤트를 어떻게? => 안됨
+다른방법 window 에 addEventListener focus 주는방식등..
+
+Typescript useState 사용시 초기값 신경쓰자!

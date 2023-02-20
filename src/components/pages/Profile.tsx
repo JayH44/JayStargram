@@ -17,8 +17,8 @@ function Profile() {
   );
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [croppedFile, setCroppedFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
 
   const logoutMutation = useAuthSignOut(auth, {
     onSuccess() {
@@ -47,20 +47,26 @@ function Profile() {
     }
   }, [active]);
 
-  const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && user.currentUser) {
       setOpen(true);
-      setFile(e.target.files[0]);
+      const fileList = Array.from(e.target.files);
+      setFiles(fileList);
+      setActive(false);
+    }
+  };
+
+  const submitImage = async () => {
+    if (user.currentUser) {
       const url = await uploadFirebase(
-        e.target.files[0],
+        croppedFiles[0],
         'profile/' + user.currentUser.uid
       );
       setPhotoURL(url);
       await updateProfile(user.currentUser, {
         photoURL: url,
       });
-      setOpen(false);
-      setActive(false);
+      setCroppedFiles([]);
     }
   };
 
@@ -83,8 +89,7 @@ function Profile() {
         <ImageContainer
           htmlFor='profileInput'
           active={active}
-          onClick={handleClick}
-        >
+          onClick={handleClick}>
           <input
             type='file'
             accept='image/*'
@@ -92,25 +97,35 @@ function Profile() {
             hidden
             onChange={handleImage}
           />
-          {photoURL ? (
-            <img src={photoURL} alt='profile' />
+          {photoURL || croppedFiles.length > 0 ? (
+            <img
+              src={photoURL || URL.createObjectURL(croppedFiles[0])}
+              alt='profile'
+            />
           ) : (
             <IoMdAddCircleOutline />
           )}
         </ImageContainer>
-        <Button
-          text='프로필 삭제'
-          type='button'
-          bgColor='blue'
-          round
-          handleOnclick={deleteImage}
-        ></Button>
+        {croppedFiles.length === 0 ? (
+          <Button
+            text='프로필 삭제'
+            type='button'
+            bgColor='blue'
+            round
+            handleOnclick={deleteImage}></Button>
+        ) : (
+          <Button
+            text='프로필 전송'
+            type='button'
+            bgColor='rgba(0,0,0,0.6)'
+            round
+            handleOnclick={submitImage}></Button>
+        )}
         <Button
           text='Logout'
           type='button'
           round
-          handleOnclick={handleLogout}
-        ></Button>
+          handleOnclick={handleLogout}></Button>
       </LeftBox>
       <RightBox>
         <TextInfo>
@@ -118,7 +133,14 @@ function Profile() {
           <p>Email: {user.currentUser?.email}</p>
         </TextInfo>
       </RightBox>
-      {open && <ImgCrop file={file} />}
+      {open && (
+        <ImgCrop
+          files={files}
+          croppedFiles={croppedFiles}
+          setCroppedFiles={setCroppedFiles}
+          setOpen={setOpen}
+        />
+      )}
     </Container>
   );
 }
@@ -172,6 +194,20 @@ const TextInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+`;
+
+const Preview = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px;
+  img {
+    display: block;
+    border: 2px solid black;
+    width: 100px;
+    height: 100px;
+  }
 `;
 
 Profile.defaultProps = {};
