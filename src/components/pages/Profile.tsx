@@ -19,7 +19,7 @@ function Profile() {
   const [active, setActive] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
-
+  const [deleteAction, setDeleteAction] = useState(false);
   const logoutMutation = useAuthSignOut(auth, {
     onSuccess() {
       alert('로그아웃 되었습니다.');
@@ -66,7 +66,10 @@ function Profile() {
       await updateProfile(user.currentUser, {
         photoURL: url,
       });
+      alert('프로필 설정이 완료되었습니다.');
       setCroppedFiles([]);
+      setFiles([]);
+      setDeleteAction(false);
     }
   };
 
@@ -78,6 +81,7 @@ function Profile() {
         await updateProfile(user.currentUser, {
           photoURL: '',
         });
+        setDeleteAction(true);
       }
     }
   };
@@ -106,7 +110,7 @@ function Profile() {
             <IoMdAddCircleOutline />
           )}
         </ImageContainer>
-        {croppedFiles.length === 0 ? (
+        {croppedFiles.length === 0 && !deleteAction ? (
           <Button
             text='프로필 삭제'
             type='button'

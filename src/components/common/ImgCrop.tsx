@@ -47,14 +47,14 @@ function ImgCrop({
       <Cropper
         src={URL.createObjectURL(files[currentIndex])}
         onInitialized={(instance) => setCropper(instance)}
-        style={{ width: 300, height: 300 }}
+        style={{ height: 400 }}
         aspectRatio={1}
       />
       <Button
         text='Crop'
         bgColor='red'
-        width='200'
-        height='30'
+        width='200px'
+        height='30px'
         handleOnclick={handleCrop}
       />
     </Background>
