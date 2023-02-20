@@ -1,51 +1,134 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { logoutFirebase } from '../../api/firebaseapi';
+import { useAuthSignOut } from '@react-query-firebase/auth';
+import { updateProfile } from 'firebase/auth';
+import React, { useRef, useState, useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import { auth } from '../../firebase';
-import { useGetCurrentUserQuery } from '../../redux/user';
+import Button from '../common/Button';
 import ImgCrop from '../common/ImgCrop';
-import { uploadFirebase } from './../../api/firebaseapi';
+import { deleteFirestore, uploadFirebase } from './../../api/firebaseapi';
+import { IoMdAddCircleOutline } from 'react-icons/io';
 
 type ProfileProps = {};
 
 function Profile() {
-  const user = auth.currentUser;
+  const user = auth;
   const [photoURL, setPhotoURL] = useState<string | undefined>(
-    user?.photoURL || undefined
+    user.currentUser?.photoURL || undefined
   );
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [croppedFile, setCroppedFile] = useState<File | null>(null);
+
+  const logoutMutation = useAuthSignOut(auth, {
+    onSuccess() {
+      alert('로그아웃 되었습니다.');
+      window.location.reload();
+    },
+  });
+
   const handleLogout = () => {
-    logoutFirebase();
-    window.location.reload();
+    if (window.confirm('로그아웃 하시겠습니까?')) logoutMutation.mutate();
   };
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      uploadFirebase(e.target.files[0], 'profile').then(setPhotoURL);
+  const handleClick = () => {
+    setActive(true);
+  };
+
+  //Input Cancel시 애니메이션 원래대로
+  useEffect(() => {
+    const listen = () => {
+      setTimeout(() => setActive(false), 1000);
+    };
+    if (active) {
+      window.addEventListener('focus', listen);
+    } else {
+      return window.removeEventListener('focus', listen);
+    }
+  }, [active]);
+
+  const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && user.currentUser) {
+      setOpen(true);
+      setFile(e.target.files[0]);
+      const url = await uploadFirebase(
+        e.target.files[0],
+        'profile/' + user.currentUser.uid
+      );
+      setPhotoURL(url);
+      await updateProfile(user.currentUser, {
+        photoURL: url,
+      });
+      setOpen(false);
+      setActive(false);
+    }
+  };
+
+  const deleteImage = async () => {
+    if (user.currentUser && photoURL) {
+      if (window.confirm('사진을 삭제하시겠습니까?')) {
+        await deleteFirestore(photoURL);
+        setPhotoURL(undefined);
+        await updateProfile(user.currentUser, {
+          photoURL: '',
+        });
+      }
     }
   };
 
   return (
     <Container>
-      <h1>Profile</h1>
-      <input
-        type='file'
-        accept='image/*'
-        id='profileInput'
-        hidden
-        onChange={handleImage}
-      />
-      <ImageContainer htmlFor='profileInput'>
-        {photoURL ? <img src={photoURL} alt='profile' /> : <div>+</div>}
-      </ImageContainer>
-      <p>Email: {user?.email}</p>
-      <p>UID: {user?.uid}</p>
-      <button onClick={handleLogout}>Logout</button>
-      <ImgCrop />
+      <LeftBox>
+        <h1>Profile</h1>
+        <ImageContainer
+          htmlFor='profileInput'
+          active={active}
+          onClick={handleClick}
+        >
+          <input
+            type='file'
+            accept='image/*'
+            id='profileInput'
+            hidden
+            onChange={handleImage}
+          />
+          {photoURL ? (
+            <img src={photoURL} alt='profile' />
+          ) : (
+            <IoMdAddCircleOutline />
+          )}
+        </ImageContainer>
+        <Button
+          text='프로필 삭제'
+          type='button'
+          bgColor='blue'
+          round
+          handleOnclick={deleteImage}
+        ></Button>
+        <Button
+          text='Logout'
+          type='button'
+          round
+          handleOnclick={handleLogout}
+        ></Button>
+      </LeftBox>
+      <RightBox>
+        <TextInfo>
+          <p>Username: {user.currentUser?.displayName}</p>
+          <p>Email: {user.currentUser?.email}</p>
+        </TextInfo>
+      </RightBox>
+      {open && <ImgCrop file={file} />}
     </Container>
   );
 }
-const Container = styled.div``;
-const ImageContainer = styled.label`
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+`;
+const ImageContainer = styled.label<{ active: boolean }>`
   width: 200px;
   height: 200px;
   border-radius: 50%;
@@ -58,8 +141,37 @@ const ImageContainer = styled.label`
   cursor: pointer;
 
   img {
-    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
+
+  svg {
+    width: 50%;
+    height: 50%;
+    transition: transform 0.4s;
+    transform: rotate(0);
+
+    ${({ active }) =>
+      active &&
+      css`
+        transform: rotate(-45deg);
+      `}
+  }
+`;
+const LeftBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  h1 {
+    text-align: center;
+    font-weight: 700;
+  }
+`;
+const RightBox = styled.div``;
+const TextInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 `;
 
 Profile.defaultProps = {};

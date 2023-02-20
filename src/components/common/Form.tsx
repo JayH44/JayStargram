@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { loginFirebase, signUpFirebase } from '../../api/firebaseapi';
 import { InputsInitial } from '../pages/SignUp';
 import Button from './Button';
 import Input from './Input';
@@ -15,11 +14,12 @@ type InputProps = {
 type FormProps = {
   title: string;
   InputData: InputProps[];
-  InputInitialData: InputsInitial;
+  inputs: InputsInitial;
+  setInputs: React.Dispatch<React.SetStateAction<InputsInitial>>;
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
 };
 
-function Form({ title, InputData, InputInitialData }: FormProps) {
-  const [inputs, setInputs] = useState(InputInitialData);
+function Form({ title, InputData, inputs, setInputs, onSubmit }: FormProps) {
   const navigate = useNavigate();
 
   //인풋 저장
@@ -31,61 +31,8 @@ function Form({ title, InputData, InputInitialData }: FormProps) {
     });
   };
 
-  //인풋 공백 체크
-  const validateInput = (value: string, name: string) => {
-    if (value === '') {
-      alert(name + '입력해주세요');
-      return false;
-    }
-    return true;
-  };
-
-  //회원가입 경우
-  const signUpCase = () => {
-    const { name, email, password } = inputs;
-    if (
-      !validateInput(name, '이름을') ||
-      !validateInput(email, '이메일을') ||
-      !validateInput(password, '비밀번호를')
-    )
-      return;
-
-    //오류는 firebaseapi.ts 에서 출력
-    signUpFirebase(name, email, password).then((res) => {
-      alert(`회원가입이 완료되었습니다. ${res}님
-      로그인 페이지로 이동합니다.`);
-      navigate('/login');
-    });
-  };
-
-  //로그인의 경우
-  const loginCase = () => {
-    const { email, password } = inputs;
-    if (
-      !validateInput(email, '이메일을') ||
-      !validateInput(password, '비밀번호를')
-    )
-      return;
-
-    loginFirebase(email, password).then((res) => {
-      alert(`환영합니다. ${res.displayName}님`);
-      navigate('/home');
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (title === 'SignUp') {
-      signUpCase();
-    }
-    if (title === 'Login') {
-      loginCase();
-    }
-  };
-
   return (
-    <Container onSubmit={handleSubmit}>
+    <Container onSubmit={onSubmit}>
       <h2>{title}</h2>
       <InputsContainer>
         {InputData.map(({ type, text, placeholder }, idx) => (

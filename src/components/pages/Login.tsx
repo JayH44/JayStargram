@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Form from '../common/Form';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
 import { googleLogin } from '../../api/firebaseapi';
+import { auth } from '../../firebase';
+import { useAuthSignInWithEmailAndPassword } from '@react-query-firebase/auth';
 
 export type InputsInitial = {
   [index: string]: string;
@@ -29,11 +31,43 @@ const InputInitialData = {
 
 function Login() {
   const navigate = useNavigate();
+  const [inputs, setInputs] = useState<InputsInitial>(InputInitialData);
+  const { email, password } = inputs;
+
+  const mutation = useAuthSignInWithEmailAndPassword(auth, {
+    onSuccess({ user }) {
+      alert('환영합니다' + user.displayName + '님');
+      navigate('/home');
+    },
+    onError(error) {
+      alert('Could not sign you in!');
+    },
+  });
+
+  const validateInput = (value: string, name: string) => {
+    if (value === '') {
+      alert(name + ' 입력해주세요');
+      return false;
+    }
+    return true;
+  };
+
+  //로그인 폼 전송
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (
+      !validateInput(email, '이메일을') ||
+      !validateInput(password, '비밀번호를')
+    )
+      return;
+
+    mutation.mutate({ email, password });
+  };
 
   //구글 로그인
   const handleGoogle = () => {
     googleLogin().then((res) => {
-      console.log('result', res);
       alert('환영합니다.');
       navigate('/home');
     });
@@ -43,7 +77,9 @@ function Login() {
       <Form
         title='Login'
         InputData={LoginData}
-        InputInitialData={InputInitialData}
+        inputs={inputs}
+        setInputs={setInputs}
+        onSubmit={handleSubmit}
       />
       <GoogleLogin onClick={handleGoogle}>
         <FcGoogle />

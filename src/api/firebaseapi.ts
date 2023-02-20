@@ -6,11 +6,12 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
+import { deleteDoc } from 'firebase/firestore';
 import {
+  deleteObject,
   getDownloadURL,
   ref,
   uploadBytes,
-  uploadBytesResumable,
 } from 'firebase/storage';
 import { auth, googleProvider, storageFirebase } from '../firebase';
 
@@ -99,4 +100,16 @@ export const uploadFirebase = async (file: File, location: string) => {
 
   const url = await getDownloadURL(fileRef);
   return url;
+};
+
+export const deleteFirestore = async (location: string) => {
+  const desertRef = ref(storageFirebase, location);
+
+  deleteObject(desertRef)
+    .then(() => {
+      alert('사진이 삭제되었습니다.');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Form from '../common/Form';
 import { FcGoogle } from 'react-icons/fc';
 import { googleLogin } from '../../api/firebaseapi';
 import { useNavigate } from 'react-router-dom';
+import { useAuthCreateUserWithEmailAndPassword } from '@react-query-firebase/auth';
+import { auth } from '../../firebase';
+import { updateProfile } from 'firebase/auth';
 
 export type InputsInitial = {
   [index: string]: string;
@@ -31,11 +34,46 @@ const InputInitialData = {
 
 function SignUp() {
   const navigate = useNavigate();
+  const [inputs, setInputs] = useState<InputsInitial>(InputInitialData);
+  const { name, email, password } = inputs;
+  const mutation = useAuthCreateUserWithEmailAndPassword(auth, {
+    onSuccess({ user }) {
+      updateProfile(user, {
+        displayName: name,
+      }).then(() => {
+        alert('가입에 성공하셨습니다. ' + name + '님');
+        navigate('/login');
+      });
+    },
+    onError(error) {
+      alert('Could not sign you up!');
+    },
+  });
+
+  const validateInput = (value: string, name: string) => {
+    if (value === '') {
+      alert(name + ' 입력해주세요');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (
+      !validateInput(name, '이름을') ||
+      !validateInput(email, '이메일을') ||
+      !validateInput(password, '비밀번호를')
+    )
+      return;
+
+    mutation.mutate({ email, password });
+  };
 
   //구글 회원가입
   const handleGoogle = () => {
     googleLogin().then((res) => {
-      console.log('result', res);
       alert('회원가입에 성공하셨습니다, 로그인페이지로 이동합니다.');
       navigate('/login');
     });
@@ -45,7 +83,9 @@ function SignUp() {
       <Form
         title='SignUp'
         InputData={SignUpData}
-        InputInitialData={InputInitialData}
+        inputs={inputs}
+        setInputs={setInputs}
+        onSubmit={handleSubmit}
       />
       <GoogleLogin onClick={handleGoogle}>
         <FcGoogle />

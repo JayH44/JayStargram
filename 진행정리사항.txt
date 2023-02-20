@@ -1,0 +1,85 @@
+---02/16---
+TypeScript with styled components
+-> props 를 사용하고 싶으면 styled.div<{여기에 props type 지정}>``
+
+ThemProvider
+Sytled.d.ts 에 타입 적용
+theme.ts 에 색상 지정
+
+APP 의 역활
+1. 적합유저인지 검증
+2. Routing
+3. 전역_테마색상 적용
+
+페이지는? 
+SignUp.tsx -> 회원가입
+Login.tsx -> Login
+
+Input 을 모듈화를 할것인가?
+Input 에 들어갈껏 => Placeholder
+props 로 어떤것을 할것인가?
+
+Form 도 모듈화를 할까?
+회원가입과 Login 은 형태가 거의 비슷
+창의 개수만 다름
+그렇다면 map 을 사용
+상태관리는 어디서?
+
+SignUp 페이지
+-> Form 을 불러옴 (이때 SignUp 임을 명시하는 title 과 구성요소 전달}
+  -> 구성요소 바탕으로 Input 창불러옴
+  -> 그에 해당하는 Button 불러옴 (버튼이름은 title)
+
+
+typeScript 관련 에러
+일부만 사용하려고 할때 partial, pick, omit 사용!
+onChange 전달사용시?
+(e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => void; 타입정의
+'?' 한개차이로도 에러가 날수 있음
+
+문자열로 객체 접근이 안됨?
+https://soopdop.github.io/2020/12/01/index-signatures-in-typescript/
+type InputsInitial = {
+  [index: string]: string;
+}; 이런식으로 선언하여 적용하자
+
+defalut 가 적용되어있을경우 ? 사용에도 주의
+
+---02/17---
+.env 파일은 루트에 => package.json 과 같은위치
+
+파이어베이스의 auth는 null 일수도 있으니
+회원가입후 리턴하는 유저 정보나
+current user의 정보 조회를 받아서 쓰자
+
+TypeScript에서 catch block error message 사용하기
+=> 간단해결책 error: any, 깊은해결책
+
+반응형 요소
+초기 레이아웃은 가로 500px 모바일 기준
+PC 를 위해 media query min-width 800px 기준
+1024px 레이아웃 구성
+
+User profile 설정 레이아웃
+게시글
+헤더의 프로필 아이콘은 User_Profile 로 변경
+
+redux 전역 데이터 설정
+user/post/comment
+
+메뉴눌렀을때 하단에서 올라오기?
+
+
+---02/20---
+Firebase 관리를 위해 React Query 로 변경
+리액트 쿼리의 use~ 를 사용하려면 
+1. 컴포넌트 안에서
+2. 조건분기 안됨
+3. 리액트 커스텀훅이 아닌 임의의 함수안에서 안됨
+
+
+Input 에서 파일 취소시 or 동일파일선택시
+onchange 이벤트를 어떻게?

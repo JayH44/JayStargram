@@ -1,19 +1,27 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header';
 import { auth } from '../../firebase';
+import { useAuthUser } from '@react-query-firebase/auth';
 
 type MainProps = {};
 
 function Main() {
-  const user = auth.currentUser;
-  
-  // if (!user) {
-  //   alert('유저정보가 없습니다. 로그인창으로 이동합니다.');
-  //   return <Navigate to='/login' />
-  // }
-
+  const navigate = useNavigate();
+  const user = useAuthUser(['user'], auth, {
+    onSuccess(user) {
+      if (!user) {
+        alert('조회결과 유저정보를 얻을수 없습니다. 로그인창으로 이동합니다.');
+        navigate('/login');
+      }
+    },
+    onError(error) {
+      alert('유저정보를 얻는데 실패했습니다.');
+      navigate('/login');
+    },
+  });
+  console.log(user);
   return (
     <>
       <Header />
