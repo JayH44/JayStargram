@@ -12,6 +12,7 @@ function PostEdit() {
   const [files, setFiles] = useState<File[]>([]);
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [idx, setIdx] = useState(0);
+  const [text, setText] = useState('');
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -26,18 +27,25 @@ function PostEdit() {
     setIdx(idx);
   };
 
-  function onDrop(e: React.DragEvent<HTMLDivElement>, index: number) {
+  const onDrop = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.preventDefault();
     const draggedIndex = parseInt(e.dataTransfer.getData('text'));
     const draggedImage = croppedFiles[draggedIndex];
     const newImages = croppedFiles.filter((_, i) => i !== draggedIndex);
     newImages.splice(index, 0, draggedImage);
     setCroppedFiles(newImages);
-  }
+  };
 
-  function onDragStart(e: React.DragEvent<HTMLDivElement>, index: number) {
+  const onDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.dataTransfer.setData('text', index.toString());
-  }
+  };
+
+  const removeImage = (idx: number) => {
+    if (window.confirm('삭제하시겠습니까?')) {
+      const newImages = croppedFiles.filter((_, i) => i !== idx);
+      setCroppedFiles(newImages);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +74,11 @@ function PostEdit() {
           onChange={handleImage}
           accept='image/*'
         />
-        <PreviewWrapper active={active} idx={idx}>
+        <PreviewWrapper
+          active={active}
+          idx={idx}
+          isPicture={croppedFiles.length > 0}
+        >
           {croppedFiles.length > 0 ? (
             croppedFiles.map((file, idx) => (
               <img key={idx} src={URL.createObjectURL(file)} alt={`[${idx}]`} />
@@ -82,21 +94,25 @@ function PostEdit() {
             ))}
         </BtnBox>
       </Preview>
-      <Post></Post>
+      <Post onChange={(e) => setText(e.target.value)} />
       <Button text='등록' type='submit' round />
       <PreviewSmall>
         {croppedFiles.length > 0 &&
           croppedFiles.map((file, idx) => (
-            <ImgBox
-              key={idx}
-              draggable
-              onDragStart={(e) => onDragStart(e, idx)}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => onDrop(e, idx)}
-              onClick={() => setIdx(idx)}
-            >
-              <img src={URL.createObjectURL(file)} alt={`[${idx + 1}]`} />
-              <p>{idx + 1}</p>
+            <ImgBox key={idx}>
+              <img
+                src={URL.createObjectURL(file)}
+                alt={`[${idx + 1}]`}
+                draggable
+                onDragStart={(e) => onDragStart(e, idx)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => onDrop(e, idx)}
+                onClick={() => setIdx(idx)}
+              />
+              <IdxBox>
+                <p>{idx + 1}</p>
+                <button onClick={() => removeImage(idx)}>삭제</button>
+              </IdxBox>
             </ImgBox>
           ))}
       </PreviewSmall>
@@ -130,11 +146,22 @@ const Preview = styled.label`
   cursor: pointer;
 `;
 
-const PreviewWrapper = styled.div<{ active: boolean; idx: number }>`
+const PreviewWrapper = styled.div<{
+  active: boolean;
+  idx: number;
+  isPicture: boolean;
+}>`
   display: flex;
   height: 100%;
   transform: translateX(${({ idx }) => -idx * 100}%);
   transition: transform 0.4s;
+
+  ${({ isPicture }) =>
+    !isPicture &&
+    css`
+      align-items: center;
+      justify-content: center;
+    `}
 
   img {
     width: 100%;
@@ -190,6 +217,7 @@ const PreviewSmall = styled.div`
   flex-wrap: wrap;
   gap: 10px;
   margin: 20px;
+  cursor: pointer;
 `;
 
 const ImgBox = styled.div`
@@ -199,9 +227,16 @@ const ImgBox = styled.div`
     width: 100px;
     height: 100px;
   }
+`;
+const IdxBox = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  gap: 10px;
 
-  p {
-    text-align: center;
+  button {
+    background-color: red;
+    color: white;
   }
 `;
 
