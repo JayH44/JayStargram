@@ -28,7 +28,7 @@ function Header() {
             </Link>
           </li>
           <li>
-            <Link to='/post'>
+            <Link to='/post/edit'>
               <FcEditImage />
             </Link>
           </li>
