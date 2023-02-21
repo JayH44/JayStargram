@@ -18,7 +18,7 @@ function PostEdit() {
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [idx, setIdx] = useState(0);
   const [text, setText] = useState('');
-  const ref = collection(dbFirebase, 'posts');
+  const ref = collection(dbFirebase, 'posts/');
   const mutation = useFirestoreCollectionMutation(ref);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +77,19 @@ function PostEdit() {
     }
 
     const { displayName, uid } = user;
-    mutation.mutate({ id: uid, name: displayName, text, photo: photoURL });
+    mutation.mutate(
+      { id: uid, name: displayName, text, photo: photoURL },
+      {
+        onSuccess() {
+          alert('글이 성공적으로 저장되었습니다.');
+          setCroppedFiles([]);
+          setText('');
+        },
+        onError(error) {
+          alert('업로드에 실패하였습니다.');
+        },
+      }
+    );
   };
 
   //Input Cancel시 애니메이션 원래대로
@@ -123,7 +135,7 @@ function PostEdit() {
             ))}
         </BtnBox>
       </Preview>
-      <Post onChange={(e) => setText(e.target.value)} />
+      <Post onChange={(e) => setText(e.target.value)} value={text} />
       <Button text='등록' type='submit' round disabled={mutation.isLoading} />
       <PreviewSmall>
         {croppedFiles.length > 0 &&
