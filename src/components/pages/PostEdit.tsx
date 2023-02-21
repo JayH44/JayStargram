@@ -1,18 +1,25 @@
+import { useFirestoreCollectionMutation } from '@react-query-firebase/firestore';
+import { collection } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import styled, { css } from 'styled-components';
+import { uploadFirebase } from '../../api/firebaseapi';
+import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
 import ImgCrop from '../common/ImgCrop';
 
 type PostEditProps = {};
 
 function PostEdit() {
+  const user = auth.currentUser;
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [idx, setIdx] = useState(0);
   const [text, setText] = useState('');
+  const ref = collection(dbFirebase, 'posts');
+  const mutation = useFirestoreCollectionMutation(ref);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -47,8 +54,30 @@ function PostEdit() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (croppedFiles.length === 0) {
+      alert('사진을 첨부해 주세요');
+      return;
+    }
+    if (text === '') {
+      alert('글을 작성해 주세요');
+      return;
+    }
+    if (!user) return;
+
+    // const photoURL = croppedFiles.forEach(
+    //   async (file) => await uploadFirebase(file, 'posts/' + user?.uid)
+    // );
+
+    let photoURL: string[] = [];
+    for (let i = 0; i < croppedFiles.length; i++) {
+      const res = await uploadFirebase(croppedFiles[i], 'posts/' + user?.uid);
+      photoURL.push(res);
+    }
+
+    const { displayName, uid } = user;
+    mutation.mutate({ id: uid, name: displayName, text, photo: photoURL });
   };
 
   //Input Cancel시 애니메이션 원래대로
@@ -95,7 +124,7 @@ function PostEdit() {
         </BtnBox>
       </Preview>
       <Post onChange={(e) => setText(e.target.value)} />
-      <Button text='등록' type='submit' round />
+      <Button text='등록' type='submit' round disabled={mutation.isLoading} />
       <PreviewSmall>
         {croppedFiles.length > 0 &&
           croppedFiles.map((file, idx) => (
@@ -206,6 +235,7 @@ const Post = styled.textarea`
   height: 200px;
   border-radius: 10px;
   padding: 15px;
+  font-size: 0.9rem;
   outline: none;
   resize: none;
   background: transparent;

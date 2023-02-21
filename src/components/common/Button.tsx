@@ -9,6 +9,7 @@ type ButtonProps = {
   width?: string;
   height?: string;
   round?: boolean;
+  disabled?: boolean;
   handleOnclick?: () => void;
 };
 
@@ -22,6 +23,7 @@ function Button({
   width,
   height,
   round,
+  disabled,
   handleOnclick,
 }: ButtonProps) {
   return (
@@ -32,6 +34,7 @@ function Button({
       width={width}
       height={height}
       round={round}
+      disabled={disabled}
       onClick={handleOnclick}
     >
       {text}
