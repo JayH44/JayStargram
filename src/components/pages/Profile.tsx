@@ -31,6 +31,7 @@ function Profile() {
     if (window.confirm('로그아웃 하시겠습니까?')) logoutMutation.mutate();
   };
 
+  //사진 추가시 클릭 애니메이션 스테이트
   const handleClick = () => {
     setActive(true);
   };
@@ -47,6 +48,7 @@ function Profile() {
     }
   }, [active]);
 
+  //이미지 파일리스트 배열로 저장
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && user.currentUser) {
       setOpen(true);
@@ -56,6 +58,7 @@ function Profile() {
     }
   };
 
+  //크롭이미지 파일 서버 전송및 등록
   const submitImage = async () => {
     if (user.currentUser) {
       const url = await uploadFirebase(
@@ -73,6 +76,7 @@ function Profile() {
     }
   };
 
+  //프로필이미지 삭제
   const deleteImage = async () => {
     if (user.currentUser && photoURL) {
       if (window.confirm('사진을 삭제하시겠습니까?')) {
@@ -93,7 +97,8 @@ function Profile() {
         <ImageContainer
           htmlFor='profileInput'
           active={active}
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <input
             type='file'
             accept='image/*'
@@ -116,20 +121,23 @@ function Profile() {
             type='button'
             bgColor='blue'
             round
-            handleOnclick={deleteImage}></Button>
+            handleOnclick={deleteImage}
+          ></Button>
         ) : (
           <Button
             text='프로필 전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
-            handleOnclick={submitImage}></Button>
+            handleOnclick={submitImage}
+          ></Button>
         )}
         <Button
           text='Logout'
           type='button'
           round
-          handleOnclick={handleLogout}></Button>
+          handleOnclick={handleLogout}
+        ></Button>
       </LeftBox>
       <RightBox>
         <TextInfo>
