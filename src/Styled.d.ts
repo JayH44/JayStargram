@@ -8,6 +8,7 @@ declare module 'styled-components' {
     buttonColor: string;
     comWidth: string;
     comHeight: string;
+    bdColor?: string;
     pageSmallWidth?: string;
     pageSmallHeight?: string;
     pageWidth?: string;

@@ -1,6 +1,6 @@
 import { useAuthSignOut } from '@react-query-firebase/auth';
-import { getAuth, updateProfile } from 'firebase/auth';
-import React, { useRef, useState, useEffect } from 'react';
+import { updateProfile } from 'firebase/auth';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { auth } from '../../firebase';
 import Button from '../common/Button';
@@ -183,7 +183,7 @@ const ImageContainer = styled.label<{ active: boolean }>`
     ${({ active }) =>
       active &&
       css`
-        transform: rotate(-45deg);
+        transform: rotate(45deg);
       `}
   }
 `;
@@ -201,20 +201,6 @@ const TextInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
-`;
-
-const Preview = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 20px;
-  img {
-    display: block;
-    border: 2px solid black;
-    width: 100px;
-    height: 100px;
-  }
 `;
 
 Profile.defaultProps = {};

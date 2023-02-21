@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header';
@@ -43,7 +43,7 @@ const Container = styled.div`
 
 const LoadingContainer = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;

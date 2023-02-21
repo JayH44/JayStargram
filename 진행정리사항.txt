@@ -90,3 +90,8 @@ Typescript useState 사용시 초기값 신경쓰자!
 ---02/21---
 프로필창 새로고침시 auth 유저정보가 null 로 반영되는문제
 Main 컴포넌트에서 useAuthState 라는 firebase-customhook 으로 해결
+
+e.target.files => 처음 아무것도 선택안할시=> null
+파일 선택하고 나서 다시 아무것도 선택안할시 => length: 0
+
+슬라이드 이미지 레퍼에서 flex 를 줄때는 정렬하지마라
