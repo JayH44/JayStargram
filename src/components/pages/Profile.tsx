@@ -1,5 +1,5 @@
 import { useAuthSignOut } from '@react-query-firebase/auth';
-import { updateProfile } from 'firebase/auth';
+import { getAuth, updateProfile } from 'firebase/auth';
 import React, { useRef, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { auth } from '../../firebase';
@@ -20,12 +20,7 @@ function Profile() {
   const [files, setFiles] = useState<File[]>([]);
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [deleteAction, setDeleteAction] = useState(false);
-  const logoutMutation = useAuthSignOut(auth, {
-    onSuccess() {
-      alert('로그아웃 되었습니다.');
-      window.location.reload();
-    },
-  });
+  const logoutMutation = useAuthSignOut(auth);
 
   const handleLogout = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) logoutMutation.mutate();

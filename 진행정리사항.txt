@@ -85,3 +85,8 @@ onchange 이벤트를 어떻게? => 안됨
 다른방법 window 에 addEventListener focus 주는방식등..
 
 Typescript useState 사용시 초기값 신경쓰자!
+
+
+---02/21---
+프로필창 새로고침시 auth 유저정보가 null 로 반영되는문제
+Main 컴포넌트에서 useAuthState 라는 firebase-customhook 으로 해결

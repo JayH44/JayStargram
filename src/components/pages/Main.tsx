@@ -1,34 +1,32 @@
-import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header';
 import { auth } from '../../firebase';
-import { useAuthUser } from '@react-query-firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 type MainProps = {};
 
 function Main() {
-  const navigate = useNavigate();
-  const user = useAuthUser(['user'], auth, {
-    onSuccess(user) {
-      if (!user) {
-        alert('조회결과 유저정보를 얻을수 없습니다. 로그인창으로 이동합니다.');
-        navigate('/login');
-      }
-    },
-    onError(error) {
-      alert('유저정보를 얻는데 실패했습니다.');
-      navigate('/login');
-    },
-  });
-  console.log(user);
-  return (
+  const [user, loading] = useAuthState(auth);
+
+  if (loading) {
+    return <LoadingContainer>Loading...</LoadingContainer>;
+  }
+
+  if (!user) {
+    alert('유저정보가 없어서 로그인창으로 이동합니다');
+  }
+
+  return user ? (
     <>
       <Header />
       <Container>
         <Outlet />
       </Container>
     </>
+  ) : (
+    <Navigate to='/login' />
   );
 }
 const Container = styled.div`
@@ -43,6 +41,13 @@ const Container = styled.div`
   }
 `;
 
+const LoadingContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 Main.defaultProps = {};
 
 export default Main;
