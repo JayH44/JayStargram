@@ -26,6 +26,19 @@ function PostEdit() {
     setIdx(idx);
   };
 
+  function onDrop(e: React.DragEvent<HTMLDivElement>, index: number) {
+    e.preventDefault();
+    const draggedIndex = parseInt(e.dataTransfer.getData('text'));
+    const draggedImage = croppedFiles[draggedIndex];
+    const newImages = croppedFiles.filter((_, i) => i !== draggedIndex);
+    newImages.splice(index, 0, draggedImage);
+    setCroppedFiles(newImages);
+  }
+
+  function onDragStart(e: React.DragEvent<HTMLDivElement>, index: number) {
+    e.dataTransfer.setData('text', index.toString());
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
@@ -74,7 +87,14 @@ function PostEdit() {
       <PreviewSmall>
         {croppedFiles.length > 0 &&
           croppedFiles.map((file, idx) => (
-            <ImgBox key={idx}>
+            <ImgBox
+              key={idx}
+              draggable
+              onDragStart={(e) => onDragStart(e, idx)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => onDrop(e, idx)}
+              onClick={() => setIdx(idx)}
+            >
               <img src={URL.createObjectURL(file)} alt={`[${idx + 1}]`} />
               <p>{idx + 1}</p>
             </ImgBox>
@@ -114,6 +134,7 @@ const PreviewWrapper = styled.div<{ active: boolean; idx: number }>`
   display: flex;
   height: 100%;
   transform: translateX(${({ idx }) => -idx * 100}%);
+  transition: transform 0.4s;
 
   img {
     width: 100%;
