@@ -1,13 +1,14 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
+import Serach from '../common/Serach';
 
 type PostProps = {};
 
 function Post() {
   return (
     <Container>
-      Post
+      <Serach />
       <Outlet />
     </Container>
   );
@@ -17,7 +18,8 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
+  gap: 10px;
 `;
 
 Post.defaultProps = {};

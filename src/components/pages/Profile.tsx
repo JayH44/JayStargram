@@ -2,11 +2,13 @@ import { useAuthSignOut } from '@react-query-firebase/auth';
 import { updateProfile } from 'firebase/auth';
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { auth } from '../../firebase';
+import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
 import ImgCrop from '../common/ImgCrop';
 import { deleteFirestore, uploadFirebase } from './../../api/firebaseapi';
 import { IoMdAddCircleOutline } from 'react-icons/io';
+import { collection, doc } from 'firebase/firestore';
+import { useFirestoreDocumentMutation } from '@react-query-firebase/firestore';
 
 type ProfileProps = {};
 
@@ -21,6 +23,9 @@ function Profile() {
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [deleteAction, setDeleteAction] = useState(false);
   const logoutMutation = useAuthSignOut(auth);
+
+  const ref = doc(collection(dbFirebase, 'users'), user.currentUser?.uid);
+  const userMutation = useFirestoreDocumentMutation(ref);
 
   const handleLogout = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) logoutMutation.mutate();
@@ -64,10 +69,20 @@ function Profile() {
       await updateProfile(user.currentUser, {
         photoURL: url,
       });
-      alert('프로필 설정이 완료되었습니다.');
-      setCroppedFiles([]);
-      setFiles([]);
-      setDeleteAction(false);
+      userMutation.mutate(
+        {
+          name: user.currentUser.displayName,
+          photo: user.currentUser.photoURL,
+        },
+        {
+          onSuccess() {
+            alert('프로필 설정이 완료되었습니다.');
+            setCroppedFiles([]);
+            setFiles([]);
+            setDeleteAction(false);
+          },
+        }
+      );
     }
   };
 

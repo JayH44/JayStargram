@@ -7,6 +7,7 @@ import Main from './components/pages/Main';
 import Message from './components/pages/Message';
 import Post from './components/pages/Post';
 import PostEdit from './components/pages/PostEdit';
+import PostList from './components/pages/PostList';
 import Profile from './components/pages/Profile';
 import SignUp from './components/pages/SignUp';
 
@@ -21,6 +22,7 @@ function Router() {
         <Route path='/' element={<Main />}>
           <Route path='home' element={<Home />} />
           <Route path='post' element={<Post />}>
+            <Route path='' element={<PostList />} />
             <Route path='edit' element={<PostEdit />} />
           </Route>
           <Route path='profile' element={<Profile />} />

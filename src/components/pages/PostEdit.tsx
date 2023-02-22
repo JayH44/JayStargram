@@ -79,7 +79,7 @@ function PostEdit() {
     const { displayName, uid } = user;
     const created = new Date(Date.now());
     mutation.mutate(
-      { id: uid, name: displayName, text, photo: photoURL, created },
+      { id: uid, name: displayName, text, photo: photoURL, created, likes: 0 },
       {
         onSuccess() {
           alert('글이 성공적으로 저장되었습니다.');

@@ -39,19 +39,28 @@ const Wrapper = styled.div<InputBoxProps>`
     width: ${({ theme, width }) => width || theme.comWidth};
     height: ${({ theme, height }) => height || theme.comHeight};
     padding: 0 10px;
-    outline: none;
+    outline-color: blue;
     background-color: transparent;
+
+    position: relative;
+    z-index: 1;
   }
 `;
 
 const Placeholder = styled.div<{ active: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
   position: absolute;
   font-size: 0.9rem;
   top: 0.25rem;
   left: 1rem;
-  z-index: -1;
+  z-index: 0;
   transform-origin: left top;
   transition: all 0.3s ease-in-out;
+
+  user-select: none;
 
   ${({ active }) =>
     active &&
@@ -60,7 +69,7 @@ const Placeholder = styled.div<{ active: boolean }>`
       top: -0.4rem;
       color: blue;
       background-color: white;
-      z-index: 0;
+      z-index: 2;
     `};
 `;
 
