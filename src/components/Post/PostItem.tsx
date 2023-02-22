@@ -1,5 +1,6 @@
-import React from 'react';
-import styled, { useState } from 'styled-components';
+import { DocumentData } from 'firebase/firestore';
+import React, { useState } from 'react';
+import styled, { css } from 'styled-components';
 
 type PostItemProps = {
   data: DocumentData;
@@ -16,8 +17,12 @@ function PostItem({ data }: PostItemProps) {
         ))}
       </PostItemWrapper>
       <BtnBox>
-        {data.photo.map((_: null, idx: number) => (
-          <div key={idx} onClick={() => setIdx(idx)}></div>
+        {data.photo.map((_: null, bidx: number) => (
+          <KeyButton
+            key={bidx}
+            onClick={() => setIdx(bidx)}
+            active={bidx === idx}
+          ></KeyButton>
         ))}
       </BtnBox>
     </Container>
@@ -56,13 +61,19 @@ const BtnBox = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px;
+`;
 
-  div {
-    width: 10px;
-    height: 10px;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 50%;
-  }
+const KeyButton = styled.div<{ active: boolean }>`
+  width: 10px;
+  height: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+
+  ${({ active }) =>
+    active &&
+    css`
+      background-color: rgba(0, 0, 0, 0.7);
+    `}
 `;
 
 PostItem.defaultProps = {};
