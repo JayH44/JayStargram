@@ -101,3 +101,6 @@ e.target.files => 처음 아무것도 선택안할시=> null
 firestore 에서 subcollection 을 작성하려면
 => collection(db, '컬렉션', '문서', '하위컬렉션')
 Null 병합 연산자 (??)
+
+검색기능 구현시, 모든 유저를 가져온다음에 client 단처리
+or 쿼리 자체 검색할때마다 변경하여 요청

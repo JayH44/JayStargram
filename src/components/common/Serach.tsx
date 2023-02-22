@@ -7,11 +7,15 @@ type SerachProps = {};
 
 function Serach() {
   const [input, setInput] = useState('');
+  const [focusOn, setFocusOn] = useState(false);
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
   return (
-    <Container>
+    <Container
+      onFocus={() => setFocusOn(true)}
+      onBlur={() => setFocusOn(false)}
+    >
       <Input
         type='text'
         text='검색'
@@ -24,7 +28,7 @@ function Serach() {
           </>
         }
       />
-      <SerachResults input={input} />
+      {focusOn && <SerachResults input={input} />}
     </Container>
   );
 }

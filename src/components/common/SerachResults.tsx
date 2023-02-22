@@ -10,7 +10,9 @@ type SerachResultsProps = {
 
 function SerachResults({ input }: SerachResultsProps) {
   const ref = query(collection(dbFirebase, 'users'));
-  const userQuery = useFirestoreQuery(['users'], ref);
+  const userQuery = useFirestoreQuery(['users'], ref, {
+    subscribe: true,
+  });
   if (userQuery.isLoading) {
     return <div>Loading...</div>;
   }
@@ -22,6 +24,7 @@ function SerachResults({ input }: SerachResultsProps) {
       {snapshot &&
         snapshot.docs.map((docSnapshot) => {
           const data = docSnapshot.data();
+          console.log(data);
           return (
             <SerachItem key={docSnapshot.id}>
               <img src={data.photo} alt={data.name} />
@@ -35,7 +38,7 @@ function SerachResults({ input }: SerachResultsProps) {
 const Container = styled.ul`
   position: absolute;
   width: ${({ theme }) => theme.comWidth};
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 `;

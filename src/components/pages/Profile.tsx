@@ -71,6 +71,7 @@ function Profile() {
       });
       userMutation.mutate(
         {
+          id: user.currentUser.uid,
           name: user.currentUser.displayName,
           photo: user.currentUser.photoURL,
         },
