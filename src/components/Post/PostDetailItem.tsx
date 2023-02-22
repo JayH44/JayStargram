@@ -19,6 +19,7 @@ function PostDetailItem({ data }: PostDetailItemProps) {
       <BtnBox>
         {data.photo.map((url: string, bidx: number) => (
           <LabelBtn
+            key={bidx}
             active={bidx === idx}
             onClick={() => setIdx(bidx)}
           ></LabelBtn>

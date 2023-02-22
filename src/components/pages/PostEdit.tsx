@@ -5,6 +5,7 @@ import {
 import { collection, doc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { uploadFirebase } from '../../api/firebaseapi';
 import { auth, dbFirebase } from '../../firebase';
@@ -21,6 +22,7 @@ function PostEdit() {
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [idx, setIdx] = useState(0);
   const [text, setText] = useState('');
+  const navigate = useNavigate();
   const ref = doc(
     collection(dbFirebase, 'posts/', user?.uid ?? '', 'subposts')
   );
@@ -99,8 +101,7 @@ function PostEdit() {
       {
         onSuccess() {
           alert('글이 성공적으로 저장되었습니다.');
-          setCroppedFiles([]);
-          setText('');
+          navigate('/post/' + ref.id);
         },
         onError(error) {
           alert('업로드에 실패하였습니다.');

@@ -5,14 +5,14 @@ import styled, { css } from 'styled-components';
 
 type PostItemProps = {
   data: DocumentData;
-  id: string;
 };
 
-function PostItem({ data, id }: PostItemProps) {
+function PostItem({ data }: PostItemProps) {
   const [idx, setIdx] = useState(0);
+  console.log(data);
   return (
     <Container>
-      <Link to={id}>
+      <Link to={`${data.postId}?userId=${data.userId}`}>
         <PostItemWrapper idx={idx}>
           {data.photo.map((url: string, idx: number) => (
             <img key={idx} src={url} alt={`${data.name}-${idx}`} />
@@ -35,6 +35,7 @@ const Container = styled.li`
   display: flex;
   overflow: hidden;
   position: relative;
+  border-radius: 10px;
 
   a {
     display: flex;
@@ -54,7 +55,6 @@ const PostItemWrapper = styled.div<{ idx: number }>`
   img {
     width: 100%;
     object-fit: cover;
-    border-radius: 10px;
     -webkit-user-drag: none;
   }
 `;
