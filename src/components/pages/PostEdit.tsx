@@ -18,7 +18,7 @@ function PostEdit() {
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [idx, setIdx] = useState(0);
   const [text, setText] = useState('');
-  const ref = collection(dbFirebase, 'posts/');
+  const ref = collection(dbFirebase, 'posts/', user?.uid ?? '', 'subposts');
   const mutation = useFirestoreCollectionMutation(ref);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,8 +77,9 @@ function PostEdit() {
     }
 
     const { displayName, uid } = user;
+    const created = new Date(Date.now());
     mutation.mutate(
-      { id: uid, name: displayName, text, photo: photoURL },
+      { id: uid, name: displayName, text, photo: photoURL, created },
       {
         onSuccess() {
           alert('글이 성공적으로 저장되었습니다.');

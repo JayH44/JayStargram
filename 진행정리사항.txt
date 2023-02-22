@@ -95,3 +95,9 @@ e.target.files => 처음 아무것도 선택안할시=> null
 파일 선택하고 나서 다시 아무것도 선택안할시 => length: 0
 
 슬라이드 이미지 레퍼에서 flex 를 줄때는 정렬하지마라
+
+
+---02/22----
+firestore 에서 subcollection 을 작성하려면
+=> collection(db, '컬렉션', '문서', '하위컬렉션')
+Null 병합 연산자 (??)
