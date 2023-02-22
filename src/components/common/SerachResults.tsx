@@ -37,10 +37,13 @@ function SerachResults({ input }: SerachResultsProps) {
 }
 const Container = styled.ul`
   position: absolute;
+  z-index: 10;
   width: ${({ theme }) => theme.comWidth};
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+  padding-bottom: 10px;
 `;
 const SerachItem = styled.li`
   display: flex;

@@ -90,6 +90,7 @@ Typescript useState 사용시 초기값 신경쓰자!
 ---02/21---
 프로필창 새로고침시 auth 유저정보가 null 로 반영되는문제
 Main 컴포넌트에서 useAuthState 라는 firebase-customhook 으로 해결
+https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search
 
 e.target.files => 처음 아무것도 선택안할시=> null
 파일 선택하고 나서 다시 아무것도 선택안할시 => length: 0
@@ -104,3 +105,4 @@ Null 병합 연산자 (??)
 
 검색기능 구현시, 모든 유저를 가져온다음에 client 단처리
 or 쿼리 자체 검색할때마다 변경하여 요청
+React-query 에선 같은 쿼리키에대해서는 변경사항이 없는한 추가처리 안함=> id별 상황별 쿼리키 추가

@@ -10,7 +10,6 @@ type PostItemProps = {
 
 function PostItem({ data, id }: PostItemProps) {
   const [idx, setIdx] = useState(0);
-  console.log(data);
   return (
     <Container>
       <Link to={id}>
@@ -35,7 +34,6 @@ function PostItem({ data, id }: PostItemProps) {
 const Container = styled.li`
   display: flex;
   overflow: hidden;
-  width: 45vw;
   position: relative;
 
   a {

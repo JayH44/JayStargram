@@ -37,10 +37,10 @@ function Login() {
   const mutation = useAuthSignInWithEmailAndPassword(auth, {
     onSuccess({ user }) {
       alert('환영합니다' + user.displayName + '님');
-      navigate('/home');
+      navigate('/profile');
     },
     onError(error) {
-      alert('Could not sign you in!');
+      alert('로그인 처리중에 오류가 발생했습니다.');
     },
   });
 

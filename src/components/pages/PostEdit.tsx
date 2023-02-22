@@ -77,7 +77,10 @@ function PostEdit() {
 
     let photoURL: string[] = [];
     for (let i = 0; i < croppedFiles.length; i++) {
-      const res = await uploadFirebase(croppedFiles[i], 'posts/' + user?.uid);
+      const res = await uploadFirebase(
+        croppedFiles[i],
+        `posts/${user?.uid}/${ref.id}`
+      );
       photoURL.push(res);
     }
 
@@ -85,7 +88,9 @@ function PostEdit() {
     mutation.mutate(
       {
         postId: ref.id,
+        userId: user?.uid,
         name: user.displayName,
+        userPhoto: user?.photoURL,
         text,
         photo: photoURL,
         created,
