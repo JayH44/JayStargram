@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Input from './Input';
 import { BsSearch } from 'react-icons/bs';
+import SerachResults from './SerachResults';
 type SerachProps = {};
 
 function Serach() {
@@ -23,6 +24,7 @@ function Serach() {
           </>
         }
       />
+      <SerachResults input={input} />
     </Container>
   );
 }
