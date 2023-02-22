@@ -1,21 +1,25 @@
 import { DocumentData } from 'firebase/firestore';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 type PostItemProps = {
   data: DocumentData;
+  id: string;
 };
 
-function PostItem({ data }: PostItemProps) {
+function PostItem({ data, id }: PostItemProps) {
   const [idx, setIdx] = useState(0);
-
+  console.log(data);
   return (
     <Container>
-      <PostItemWrapper idx={idx}>
-        {data.photo.map((url: string, idx: number) => (
-          <img key={idx} src={url} alt={`${data.name}-${idx}`} />
-        ))}
-      </PostItemWrapper>
+      <Link to={id}>
+        <PostItemWrapper idx={idx}>
+          {data.photo.map((url: string, idx: number) => (
+            <img key={idx} src={url} alt={`${data.name}-${idx}`} />
+          ))}
+        </PostItemWrapper>
+      </Link>
       <BtnBox>
         {data.photo.map((_: null, bidx: number) => (
           <KeyButton
@@ -34,7 +38,13 @@ const Container = styled.li`
   width: 45vw;
   position: relative;
 
-  cursor: pointer;
+  a {
+    display: flex;
+    overflow: hidden;
+    width: 45vw;
+    position: relative;
+    -webkit-user-drag: none;
+  }
 `;
 
 const PostItemWrapper = styled.div<{ idx: number }>`
@@ -47,11 +57,12 @@ const PostItemWrapper = styled.div<{ idx: number }>`
     width: 100%;
     object-fit: cover;
     border-radius: 10px;
+    -webkit-user-drag: none;
   }
 `;
 const BtnBox = styled.div`
   position: absolute;
-  width: 80%;
+  width: 100%;
   height: 20px;
   bottom: 5%;
   left: 50%;

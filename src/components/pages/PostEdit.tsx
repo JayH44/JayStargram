@@ -1,5 +1,8 @@
-import { useFirestoreCollectionMutation } from '@react-query-firebase/firestore';
-import { collection } from 'firebase/firestore';
+import {
+  useFirestoreCollectionMutation,
+  useFirestoreDocumentMutation,
+} from '@react-query-firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import styled, { css } from 'styled-components';
@@ -18,8 +21,10 @@ function PostEdit() {
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [idx, setIdx] = useState(0);
   const [text, setText] = useState('');
-  const ref = collection(dbFirebase, 'posts/', user?.uid ?? '', 'subposts');
-  const mutation = useFirestoreCollectionMutation(ref);
+  const ref = doc(
+    collection(dbFirebase, 'posts/', user?.uid ?? '', 'subposts')
+  );
+  const mutation = useFirestoreDocumentMutation(ref);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -76,10 +81,16 @@ function PostEdit() {
       photoURL.push(res);
     }
 
-    const { displayName, uid } = user;
     const created = new Date(Date.now());
     mutation.mutate(
-      { id: uid, name: displayName, text, photo: photoURL, created, likes: 0 },
+      {
+        postId: ref.id,
+        name: user.displayName,
+        text,
+        photo: photoURL,
+        created,
+        likes: 0,
+      },
       {
         onSuccess() {
           alert('글이 성공적으로 저장되었습니다.');

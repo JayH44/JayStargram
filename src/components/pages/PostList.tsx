@@ -26,8 +26,11 @@ function PostList() {
     <Container>
       {snapshot &&
         snapshot.docs.map((docSnapshot) => {
+          console.log(docSnapshot);
           const data = docSnapshot.data();
-          return <PostItem key={docSnapshot.id} data={data} />;
+          return (
+            <PostItem key={docSnapshot.id} id={docSnapshot.id} data={data} />
+          );
         })}
     </Container>
   );

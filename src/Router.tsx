@@ -6,6 +6,7 @@ import Login from './components/pages/Login';
 import Main from './components/pages/Main';
 import Message from './components/pages/Message';
 import Post from './components/pages/Post';
+import PostDetail from './components/pages/PostDetail';
 import PostEdit from './components/pages/PostEdit';
 import PostList from './components/pages/PostList';
 import Profile from './components/pages/Profile';
@@ -24,6 +25,7 @@ function Router() {
           <Route path='post' element={<Post />}>
             <Route path='' element={<PostList />} />
             <Route path='edit' element={<PostEdit />} />
+            <Route path=':id' element={<PostDetail />} />
           </Route>
           <Route path='profile' element={<Profile />} />
           <Route path='message' element={<Message />} />
