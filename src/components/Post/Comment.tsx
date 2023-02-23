@@ -31,6 +31,8 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   if (!user || !id || commentsQuery.isLoading || !commentArr) {
     return <div>Loading...</div>;
   }
+
+  console.log('rr');
   const handleSubmit = () => {
     if (text === '') {
       alert('댓글을 입력해주세요');
