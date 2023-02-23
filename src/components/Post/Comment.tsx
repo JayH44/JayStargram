@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
 import Input from '../common/Input';
+import ProfileBox from '../common/ProfileBox';
 
 type CommentProps = {
   id: string;
@@ -57,26 +58,19 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
       }
     );
   };
-
   return (
     <Container>
       <CommentList>
         {(commentArr.length === 1 || (!dropdown && commentArr.length > 1)) && (
           <CommentItem>
-            <LeftBox>
-              <img src={commentArr[0].userPhoto} alt={commentArr[0].userName} />
-              <p>{commentArr[0].userName}</p>
-            </LeftBox>
+            <ProfileBox userId={commentArr[0].userId} />
             <p>{commentArr[0].text}</p>
           </CommentItem>
         )}
         {dropdown &&
           commentArr.map((comment: any, idx: number) => (
             <CommentItem key={idx}>
-              <LeftBox>
-                <img src={comment.userPhoto} alt={comment.userName} />
-                <p>{comment.userName}</p>
-              </LeftBox>
+              <ProfileBox userId={comment.userId} />
               <p>{comment.text}</p>
             </CommentItem>
           ))}
@@ -136,9 +130,6 @@ const LeftBox = styled.div`
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-  }
-
-  p {
   }
 `;
 

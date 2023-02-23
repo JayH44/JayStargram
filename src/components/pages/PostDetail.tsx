@@ -1,4 +1,5 @@
 import {
+  useFirestoreDocument,
   useFirestoreDocumentDeletion,
   useFirestoreQuery,
   useFirestoreTransaction,
@@ -41,8 +42,14 @@ function PostDetail() {
     subscribe: true,
   });
 
-  const docref = doc(collection(dbFirebase, `posts/${userId}/subposts`), id);
+  const userRef = doc(dbFirebase, 'users', userId ?? '');
+  const userQuery = useFirestoreDocument(['user', userId], userRef, {
+    subscribe: true,
+  });
+  const userPhoto = userQuery.data?.data()?.photo;
+  const userName = userQuery.data?.data()?.name;
 
+  const docref = doc(collection(dbFirebase, `posts/${userId}/subposts`), id);
   const deleteMutation = useFirestoreDocumentDeletion(docref, {
     onSuccess() {
       alert('문서 삭제가 성공하였습니다.');
@@ -97,7 +104,7 @@ function PostDetail() {
     likeMutation.mutate();
   };
 
-  if (postQuery.isLoading) {
+  if (postQuery.isLoading || userQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -107,8 +114,8 @@ function PostDetail() {
     <Container>
       <AuthorBox>
         <ProfileContainer>
-          <img src={data.userPhoto} alt={data.name} />
-          <p>{data.name}</p>
+          <img src={userPhoto} alt={userName} />
+          <p>{userName}</p>
         </ProfileContainer>
         <MenuContainer onClick={() => setIsShow(!isShow)}>
           <BiMenu />
@@ -156,9 +163,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: ${({ theme }) => theme.pageWidth};
 
   position: relative;
-
   user-select: none;
 `;
 
