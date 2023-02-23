@@ -26,12 +26,12 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   });
   const commentMutation = useFirestoreDocumentMutation(commentRef);
 
-  console.log('rr');
   const commentArr = commentsQuery.data?.data()?.commentArr;
 
   if (!user || !id || commentsQuery.isLoading || !commentArr) {
     return <div>Loading...</div>;
   }
+  console.log(commentArr);
 
   const handleSubmit = () => {
     if (text === '') {
@@ -61,6 +61,15 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   return (
     <Container>
       <CommentList>
+        {(commentArr.length === 1 || (!dropdown && commentArr.length > 1)) && (
+          <CommentItem>
+            <LeftBox>
+              <img src={commentArr[0].userPhoto} alt={commentArr[0].userName} />
+              <p>{commentArr[0].userName}</p>
+            </LeftBox>
+            <p>{commentArr[0].text}</p>
+          </CommentItem>
+        )}
         {dropdown &&
           commentArr.map((comment: any, idx: number) => (
             <CommentItem key={idx}>

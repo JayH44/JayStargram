@@ -28,7 +28,6 @@ function PostEdit() {
   );
   const mutation = useFirestoreDocumentMutation(ref);
   const commentRef = doc(dbFirebase, `comments/${ref.id}`);
-  // const commentMutation = useFirestoreDocumentMutation(commentRef);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -104,7 +103,6 @@ function PostEdit() {
       {
         async onSuccess() {
           alert('글이 성공적으로 저장되었습니다.');
-          console.log(ref.id, commentRef.id);
           await setDoc(commentRef, {
             commentArr: [],
           });
