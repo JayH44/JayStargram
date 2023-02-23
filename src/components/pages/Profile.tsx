@@ -1,4 +1,4 @@
-import { useAuthSignOut } from '@react-query-firebase/auth';
+import { useAuthSignOut, useAuthUser } from '@react-query-firebase/auth';
 import { updateProfile } from 'firebase/auth';
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
@@ -14,9 +14,10 @@ import Input from '../common/Input';
 type ProfileProps = {};
 
 function Profile() {
-  const user = auth;
+  const { isLoading, data } = useAuthUser(['user'], auth);
+  const user = data;
   const [photoURL, setPhotoURL] = useState<string | undefined>(
-    user.currentUser?.photoURL || undefined
+    user?.photoURL || undefined
   );
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
@@ -26,7 +27,7 @@ function Profile() {
   const [deleteAction, setDeleteAction] = useState(false);
   const logoutMutation = useAuthSignOut(auth);
 
-  const ref = doc(collection(dbFirebase, 'users'), user.currentUser?.uid);
+  const ref = doc(collection(dbFirebase, 'users'), user?.uid);
   const userMutation = useFirestoreDocumentMutation(ref);
 
   const handleLogout = () => {
@@ -52,7 +53,7 @@ function Profile() {
 
   //이미지 파일리스트 배열로 저장
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && user.currentUser) {
+    if (e.target.files && user) {
       setOpen(true);
       const fileList = Array.from(e.target.files);
       setFiles(fileList);
@@ -62,20 +63,17 @@ function Profile() {
 
   //크롭이미지 파일 서버 전송및 등록
   const submitImage = async () => {
-    if (user.currentUser) {
-      const url = await uploadFirebase(
-        croppedFiles[0],
-        'profile/' + user.currentUser.uid
-      );
+    if (user) {
+      const url = await uploadFirebase(croppedFiles[0], 'profile/' + user.uid);
       setPhotoURL(url);
-      await updateProfile(user.currentUser, {
+      await updateProfile(user, {
         photoURL: url,
       });
       userMutation.mutate(
         {
-          id: user.currentUser.uid,
-          name: user.currentUser.displayName,
-          photo: user.currentUser.photoURL,
+          id: user.uid,
+          name: user.displayName,
+          photo: user.photoURL,
         },
         {
           onSuccess() {
@@ -89,15 +87,15 @@ function Profile() {
     }
   };
   const handleName = async () => {
-    if (!user.currentUser) return;
-    await updateProfile(user.currentUser, {
+    if (!user) return;
+    await updateProfile(user, {
       displayName: text,
     });
     userMutation.mutate(
       {
-        id: user.currentUser.uid,
+        id: user.uid,
         name: text,
-        photo: user.currentUser.photoURL,
+        photo: user.photoURL,
       },
       {
         onSuccess() {
@@ -110,11 +108,11 @@ function Profile() {
 
   //프로필이미지 삭제
   const deleteImage = async () => {
-    if (user.currentUser && photoURL) {
+    if (user && photoURL) {
       if (window.confirm('사진을 삭제하시겠습니까?')) {
         await deleteFirestore(photoURL);
         setPhotoURL(undefined);
-        await updateProfile(user.currentUser, {
+        await updateProfile(user, {
           photoURL: '',
         });
         setDeleteAction(true);
@@ -133,8 +131,7 @@ function Profile() {
         <ImageContainer
           htmlFor='profileInput'
           active={active}
-          onClick={handleClick}
-        >
+          onClick={handleClick}>
           <input
             type='file'
             accept='image/*'
@@ -157,28 +154,25 @@ function Profile() {
             type='button'
             bgColor='blue'
             round
-            handleOnclick={deleteImage}
-          ></Button>
+            handleOnclick={deleteImage}></Button>
         ) : (
           <Button
             text='프로필 사진 전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
-            handleOnclick={submitImage}
-          ></Button>
+            handleOnclick={submitImage}></Button>
         )}
         <Button
           text='Logout'
           type='button'
           round
-          handleOnclick={handleLogout}
-        ></Button>
+          handleOnclick={handleLogout}></Button>
       </LeftBox>
       <RightBox>
         <TextInfo>
           <p>
-            Username: {user.currentUser?.displayName}
+            Username: {user?.displayName}
             <ProfileModBox>
               <Input
                 type='text'
@@ -190,7 +184,7 @@ function Profile() {
               <Button text='이름수정' handleOnclick={handleName} />
             </ProfileModBox>
           </p>
-          <p>Email: {user.currentUser?.email}</p>
+          <p>Email: {user?.email}</p>
         </TextInfo>
       </RightBox>
       {open && (
@@ -216,24 +210,19 @@ const ImageContainer = styled.label<{ active: boolean }>`
   height: 200px;
   border-radius: 50%;
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
-
   img {
     height: 100%;
     object-fit: cover;
   }
-
   svg {
     width: 50%;
     height: 50%;
     transition: transform 0.4s;
     transform: rotate(0);
-
     ${({ active }) =>
       active &&
       css`

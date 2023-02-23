@@ -3,20 +3,22 @@ import { Navigate, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header';
 import { auth } from '../../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useAuthUser } from '@react-query-firebase/auth';
 
 type MainProps = {};
 
 function Main() {
-  const [user, loading] = useAuthState(auth);
+  const user = useAuthUser(['user'], auth);
 
-  if (loading) {
+  if (user.isLoading) {
     return <LoadingContainer>Loading...</LoadingContainer>;
   }
 
-  if (!user) {
+  if (!user.data) {
     alert('유저정보가 없어서 로그인창으로 이동합니다');
   }
+
+  console.log(user);
 
   return user ? (
     <>
