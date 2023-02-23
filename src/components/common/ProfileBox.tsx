@@ -11,7 +11,7 @@ function ProfileBox({ userId }: { userId: string }) {
   });
 
   if (userQuery.isLoading) {
-    return <div>Loading...</div>;
+    return <div>ProfileBox Loading...</div>;
   }
 
   const userPhoto = userQuery.data?.data()?.photo;

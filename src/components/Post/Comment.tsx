@@ -1,9 +1,10 @@
+import { useAuthUser } from '@react-query-firebase/auth';
 import {
   useFirestoreDocument,
   useFirestoreDocumentMutation,
 } from '@react-query-firebase/firestore';
-import { collection, doc, setDoc } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import { collection, doc } from 'firebase/firestore';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
@@ -17,20 +18,19 @@ type CommentProps = {
 };
 
 function Comment({ id, dropdown, setDropdown }: CommentProps) {
-  const user = auth.currentUser;
+  const { isLoading, data } = useAuthUser(['user'], auth);
+  const user = data;
   const [text, setText] = useState('');
-
   const commentRef = doc(collection(dbFirebase, 'comments'), id);
 
   const commentsQuery = useFirestoreDocument(['comments', id], commentRef, {
     subscribe: true,
   });
   const commentMutation = useFirestoreDocumentMutation(commentRef);
-
   const commentArr = commentsQuery.data?.data()?.commentArr;
 
   if (!user || !id || commentsQuery.isLoading || !commentArr) {
-    return <div>Loading...</div>;
+    return <div>Comment Loading...</div>;
   }
 
   console.log('rr');

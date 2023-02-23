@@ -20,6 +20,7 @@ import { BiMenu, BiLike, BiComment } from 'react-icons/bi';
 import { BsChatRight, BsBookmark, BsHeart, BsHeartFill } from 'react-icons/bs';
 import { getTimeElapsed } from '../Post/postfunction';
 import Comment from '../Post/Comment';
+import { useAuthUser } from '@react-query-firebase/auth';
 
 type PostDetailProps = {};
 
@@ -27,7 +28,8 @@ function PostDetail() {
   const { id } = useParams();
   const { search } = useLocation();
   const userId = new URLSearchParams(search).get('userId');
-  const user = auth.currentUser;
+  const ownUser = useAuthUser(['user'], auth);
+  const user = ownUser.data;
   const [isOwner, setIsowner] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [isLiked, setIsLiked] = useState(false);

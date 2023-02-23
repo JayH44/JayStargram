@@ -18,8 +18,6 @@ function Main() {
     alert('유저정보가 없어서 로그인창으로 이동합니다');
   }
 
-  console.log(user);
-
   return user ? (
     <>
       <Header />

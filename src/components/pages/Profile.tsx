@@ -10,6 +10,7 @@ import { IoMdAddCircleOutline } from 'react-icons/io';
 import { collection, doc } from 'firebase/firestore';
 import { useFirestoreDocumentMutation } from '@react-query-firebase/firestore';
 import Input from '../common/Input';
+import { useNavigate } from 'react-router-dom';
 
 type ProfileProps = {};
 
@@ -25,7 +26,14 @@ function Profile() {
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [text, setText] = useState('');
   const [deleteAction, setDeleteAction] = useState(false);
-  const logoutMutation = useAuthSignOut(auth);
+  const navigate = useNavigate();
+
+  const logoutMutation = useAuthSignOut(auth, {
+    onSuccess() {
+      alert('로그아웃 하셨습니다. 로그인창으로 이동합니다.');
+      navigate('/login');
+    },
+  });
 
   const ref = doc(collection(dbFirebase, 'users'), user?.uid);
   const userMutation = useFirestoreDocumentMutation(ref);
@@ -171,19 +179,18 @@ function Profile() {
       </LeftBox>
       <RightBox>
         <TextInfo>
-          <p>
-            Username: {user?.displayName}
-            <ProfileModBox>
-              <Input
-                type='text'
-                text='name'
-                value={text}
-                active={text.length > 0}
-                handleInputs={(e) => setText(e.target.value)}
-              />
-              <Button text='이름수정' handleOnclick={handleName} />
-            </ProfileModBox>
-          </p>
+          <p>Username: {user?.displayName}</p>
+          <ProfileModBox>
+            <Input
+              type='text'
+              text='name'
+              value={text}
+              active={text.length > 0}
+              handleInputs={(e) => setText(e.target.value)}
+            />
+            <Button text='이름수정' handleOnclick={handleName} />
+          </ProfileModBox>
+
           <p>Email: {user?.email}</p>
         </TextInfo>
       </RightBox>
