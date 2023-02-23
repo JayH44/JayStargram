@@ -4,12 +4,13 @@ import styled, { css } from 'styled-components';
 
 type PostDetailItemProps = {
   data: DocumentData;
+  onDoubleClick?: React.MouseEventHandler<HTMLUListElement>;
 };
 
-function PostDetailItem({ data }: PostDetailItemProps) {
+function PostDetailItem({ data, onDoubleClick }: PostDetailItemProps) {
   const [idx, setIdx] = useState(0);
   return (
-    <Container>
+    <Container onDoubleClick={onDoubleClick}>
       <ImgBoxWrapper idx={idx}>
         {data.photo.map((url: string, idx: string) => (
           <img key={idx} src={url} alt={data.name}></img>

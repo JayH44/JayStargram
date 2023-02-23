@@ -12,11 +12,11 @@ import {
 } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import PostDetailItem from '../Post/PostDetailItem';
 import { BiMenu, BiLike, BiComment } from 'react-icons/bi';
-import { BsHeart, BsHeartFill } from 'react-icons/bs';
+import { BsChatRight, BsBookmark, BsHeart, BsHeartFill } from 'react-icons/bs';
 import { getTimeElapsed } from '../Post/postfunction';
 
 type PostDetailProps = {};
@@ -29,6 +29,7 @@ function PostDetail() {
   const [isOwner, setIsowner] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [isClicked, setIsCliked] = useState(false);
   const navigate = useNavigate();
   const ref = query(
     collectionGroup(dbFirebase, 'subposts'),
@@ -39,6 +40,7 @@ function PostDetail() {
   });
 
   const docref = doc(collection(dbFirebase, `posts/${userId}/subposts`), id);
+
   const deleteMutation = useFirestoreDocumentDeletion(docref, {
     onSuccess() {
       alert('문서 삭제가 성공하였습니다.');
@@ -46,23 +48,20 @@ function PostDetail() {
     },
   });
 
-  const likeMutation = useFirestoreTransaction(
-    dbFirebase,
-    async (tsx) => {
-      const doc = await tsx.get(docref);
-      const num = isLiked ? -1 : 1;
-      const newLikes = doc.data()?.likes + num;
-      tsx.update(docref, {
-        likes: newLikes,
-      });
-      return newLikes;
-    },
-    {
-      onSuccess() {
-        postQuery.refetch();
-      },
-    }
-  );
+  const likeMutation = useFirestoreTransaction(dbFirebase, async (tsx) => {
+    const doc = await tsx.get(docref);
+    const likeUserArr = doc.data()?.likeUserArr;
+
+    const newlikeUserArr = isLiked
+      ? likeUserArr.filter((id: string) => id !== user?.uid)
+      : likeUserArr.concat(user?.uid);
+
+    tsx.update(docref, {
+      likes: newlikeUserArr.length,
+      likeUserArr: newlikeUserArr,
+    });
+    // return newLikes;
+  });
 
   useEffect(() => {
     if (user?.uid === userId) {
@@ -72,10 +71,16 @@ function PostDetail() {
     }
   }, [user?.uid, userId]);
 
-  if (postQuery.isLoading) {
-    return <div>Loading...</div>;
-  }
   const snapshot = postQuery.data;
+  const data = snapshot?.docs[0].data();
+
+  useEffect(() => {
+    if (data?.likeUserArr.indexOf(user?.uid) === -1) {
+      setIsLiked(false);
+    } else if (data?.likeUserArr.indexOf(user?.uid) > -1) {
+      setIsLiked(true);
+    }
+  }, [data, user?.uid]);
 
   const handleDelete = () => {
     if (user?.uid === userId && window.confirm('삭제하시겠습니까?')) {
@@ -85,65 +90,74 @@ function PostDetail() {
 
   const handleLike = () => {
     setIsLiked(!isLiked);
+    setIsCliked(true);
+    setTimeout(() => setIsCliked(false), 2000);
     likeMutation.mutate();
   };
 
+  if (postQuery.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!data) return <div>Loading...</div>;
+
   return (
-    <>
-      {snapshot &&
-        snapshot.docs.map((docSnapshot) => {
-          const data = docSnapshot.data();
-          return (
-            <Container key={docSnapshot.id}>
-              <AuthorBox>
-                <ProfileContainer>
-                  <img src={data.userPhoto} alt={data.name} />
-                  <p>{data.name}</p>
-                </ProfileContainer>
-                <MenuContainer onClick={() => setIsShow(!isShow)}>
-                  <BiMenu />
-                  {isShow && (
-                    <MenuList>
-                      {isOwner ? (
-                        <>
-                          <li onClick={handleDelete}>삭제</li>
-                          <li>수정</li>
-                        </>
-                      ) : (
-                        <li>즐겨찾기</li>
-                      )}
-                    </MenuList>
-                  )}
-                </MenuContainer>
-              </AuthorBox>
-              <PostDetailItem data={data} />
-              <PostSideBox>
-                <ButtonContainer>
-                  {isLiked ? (
-                    <BsHeartFill onClick={handleLike} />
-                  ) : (
-                    <BsHeart onClick={handleLike} />
-                  )}
-                  <BiComment />
-                </ButtonContainer>
-                <SideInfo>
-                  <p>{getTimeElapsed(data.created.seconds)},</p>
-                  <p>좋아요: {data.likes}</p>
-                </SideInfo>
-              </PostSideBox>
-              <PostTextBox>{data.text}</PostTextBox>
-              <CommentBox>댓글창</CommentBox>
-            </Container>
-          );
-        })}
-    </>
+    <Container>
+      <AuthorBox>
+        <ProfileContainer>
+          <img src={data.userPhoto} alt={data.name} />
+          <p>{data.name}</p>
+        </ProfileContainer>
+        <MenuContainer onClick={() => setIsShow(!isShow)}>
+          <BiMenu />
+          {isShow && (
+            <MenuList>
+              {isOwner ? (
+                <>
+                  <li onClick={handleDelete}>삭제</li>
+                  <li>수정</li>
+                </>
+              ) : (
+                <li>즐겨찾기</li>
+              )}
+            </MenuList>
+          )}
+        </MenuContainer>
+      </AuthorBox>
+      <PostDetailItem data={data} onDoubleClick={handleLike} />
+      <PostSideBox>
+        <ButtonContainer>
+          <div>
+            {isLiked ? (
+              <BsHeartFill onClick={handleLike} />
+            ) : (
+              <BsHeart onClick={handleLike} />
+            )}
+            <BsChatRight />
+          </div>
+          <BsBookmark />
+        </ButtonContainer>
+        <SideInfo>
+          <p>좋아요: {data.likeUserArr.length}개,</p>
+          <p>{getTimeElapsed(data.created.seconds)} 작성됨</p>
+        </SideInfo>
+      </PostSideBox>
+      <PostTextBox>{data.text}</PostTextBox>
+      <CommentBox>댓글창</CommentBox>
+      <LikeBox isClicked={isClicked}>
+        {isLiked ? <BsHeartFill /> : <BsHeart />}
+      </LikeBox>
+    </Container>
   );
 }
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  user-select: none;
   gap: 10px;
+
+  position: relative;
+
+  user-select: none;
 `;
 
 const AuthorBox = styled.div`
@@ -151,22 +165,14 @@ const AuthorBox = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  height: 40px;
-
-  img {
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
+  height: 30px;
 `;
 
 const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-  height: 40px;
-
-  overflow: hidden;
+  height: 30px;
 
   img {
     height: 100%;
@@ -185,6 +191,11 @@ const MenuContainer = styled.div`
   svg {
     width: 30px;
     height: 30px;
+    border-radius: 50%;
+
+    &:hover {
+      background-color: #bbb;
+    }
   }
 `;
 
@@ -194,14 +205,18 @@ const MenuList = styled.ul`
   left: 0;
   z-index: 100;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.6);
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  background-color: ${({ theme }) => theme.bgColor};
+  border-radius: 10px;
+  overflow: hidden;
 
   li {
     width: 100%;
     padding: 5px;
     cursor: pointer;
+
+    &:hover {
+      background-color: #eee;
+    }
   }
 `;
 
@@ -209,8 +224,15 @@ const PostSideBox = styled.div``;
 const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: ${({ theme }) => theme.comHeight};
+  justify-content: space-between;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: ${({ theme }) => theme.comHeight};
+  }
+
   svg {
     width: 20px;
     height: 20px;
@@ -226,6 +248,32 @@ const SideInfo = styled.div`
 
 const PostTextBox = styled.div``;
 const CommentBox = styled.div``;
+
+const LikeBox = styled.div<{ isClicked: boolean }>`
+  position: absolute;
+  opacity: 0;
+  top: 40%;
+  left: 45%;
+
+  ${({ isClicked }) =>
+    isClicked &&
+    css`
+      animation: onoff 2s ease-in-out;
+    `}
+
+  @keyframes onoff {
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  svg {
+    width: 50px;
+    height: 50px;
+  }
+`;
 
 PostDetail.defaultProps = {};
 

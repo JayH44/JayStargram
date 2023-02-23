@@ -97,6 +97,7 @@ function PostEdit() {
         photo: photoURL,
         created,
         likes: 0,
+        likeUserArr: [],
       },
       {
         onSuccess() {

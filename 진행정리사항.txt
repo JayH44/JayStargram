@@ -116,5 +116,7 @@ Layout 이 안나올때는 overflow 의심해라
 
 react-query-firebase 에 나온 문서도 틀릴수 있다
 useFirestoreTransaction은 db를 받음 not ref
-userQuery 사용시, transaction 등으로 데이터를 변경하려면
+useQuery 사용시, transaction 등으로 데이터를 변경하려면
 그에맞게 쿼리키도 바뀌게 반영해야 한다.
+좋아요는 나 말고 다른 유저도 반영할수 있으므로
+subscribe: true 옵션활용
