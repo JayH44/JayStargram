@@ -18,7 +18,7 @@ export const lightTheme: DefaultTheme = {
   comHeight: '30px',
   pageSmallWidth: '500px',
   pageSmallHeight: '500px',
-  pageWidth: '1024px',
+  pageWidth: '800px',
   pageHeight: '700px',
   pageMaxHeight: '100vh',
 };

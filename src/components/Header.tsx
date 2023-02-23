@@ -58,7 +58,9 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  max-width: ${({ theme }) => theme.pageSmallWidth};
+  min-width: ${({ theme }) => theme.pageSmallWidth};
+  max-width: ${({ theme }) => theme.pageWidth};
+
   display: flex;
   justify-content: space-between;
   padding: 0 10px;

@@ -23,23 +23,18 @@ function PostItem({ data }: PostItemProps) {
           <KeyButton
             key={bidx}
             onClick={() => setIdx(bidx)}
-            active={bidx === idx}
-          ></KeyButton>
+            active={bidx === idx}></KeyButton>
         ))}
       </BtnBox>
     </Container>
   );
 }
 const Container = styled.li`
-  display: flex;
   overflow: hidden;
   position: relative;
   border-radius: 10px;
 
   a {
-    display: flex;
-    overflow: hidden;
-    width: 45vw;
     position: relative;
     -webkit-user-drag: none;
   }
@@ -53,6 +48,7 @@ const PostItemWrapper = styled.div<{ idx: number }>`
 
   img {
     width: 100%;
+    height: 100%;
     object-fit: cover;
     -webkit-user-drag: none;
   }

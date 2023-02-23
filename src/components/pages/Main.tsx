@@ -30,7 +30,8 @@ function Main() {
   );
 }
 const Container = styled.div`
-  max-width: ${({ theme }) => theme.pageSmallWidth};
+  min-width: ${({ theme }) => theme.pageSmallWidth};
+  max-width: ${({ theme }) => theme.pageWidth};
 
   margin: 0 auto;
   padding: 0 10px;
