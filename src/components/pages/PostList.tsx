@@ -36,6 +36,7 @@ const Container = styled.ul`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+  user-select: none;
 `;
 
 PostList.defaultProps = {};

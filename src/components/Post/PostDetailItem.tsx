@@ -59,7 +59,11 @@ const LabelBtn = styled.div<{ active: boolean }>`
   height: 15px;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
 
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
   ${({ active }) =>
     active &&
     css`

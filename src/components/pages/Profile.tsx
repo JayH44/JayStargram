@@ -172,6 +172,7 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  user-select: none;
 `;
 const ImageContainer = styled.label<{ active: boolean }>`
   width: 200px;

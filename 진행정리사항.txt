@@ -109,3 +109,12 @@ React-query 에선 같은 쿼리키에대해서는 변경사항이 없는한 추
 
 firestore 에서 동일한 파일을 덮어쓰기하면 경로뒤에 
 detail 이 바뀜, 그래서 이름뒤에 날짜추가 or 다른폴더생성
+
+
+---02/23---
+Layout 이 안나올때는 overflow 의심해라
+
+react-query-firebase 에 나온 문서도 틀릴수 있다
+useFirestoreTransaction은 db를 받음 not ref
+userQuery 사용시, transaction 등으로 데이터를 변경하려면
+그에맞게 쿼리키도 바뀌게 반영해야 한다.

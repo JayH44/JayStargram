@@ -1,6 +1,7 @@
 import {
   useFirestoreDocumentDeletion,
   useFirestoreQuery,
+  useFirestoreTransaction,
 } from '@react-query-firebase/firestore';
 import {
   collection,
@@ -14,7 +15,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import PostDetailItem from '../Post/PostDetailItem';
-import { BiMenu } from 'react-icons/bi';
+import { BiMenu, BiLike, BiComment } from 'react-icons/bi';
+import { BsHeart, BsHeartFill } from 'react-icons/bs';
+import { getTimeElapsed } from '../Post/postfunction';
 
 type PostDetailProps = {};
 
@@ -23,22 +26,43 @@ function PostDetail() {
   const { search } = useLocation();
   const userId = new URLSearchParams(search).get('userId');
   const user = auth.currentUser;
+  const [isOwner, setIsowner] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
   const ref = query(
     collectionGroup(dbFirebase, 'subposts'),
     where('postId', '==', id)
   );
-  const postQuery = useFirestoreQuery(['post', id], ref);
-  const [isOwner, setIsowner] = useState(false);
-  const [isShow, setIsShow] = useState(false);
+  const postQuery = useFirestoreQuery(['post', { id, isLiked }], ref, {
+    subscribe: true,
+  });
 
   const docref = doc(collection(dbFirebase, `posts/${userId}/subposts`), id);
-  const docMutation = useFirestoreDocumentDeletion(docref, {
+  const deleteMutation = useFirestoreDocumentDeletion(docref, {
     onSuccess() {
       alert('문서 삭제가 성공하였습니다.');
       navigate('/post');
     },
   });
+
+  const likeMutation = useFirestoreTransaction(
+    dbFirebase,
+    async (tsx) => {
+      const doc = await tsx.get(docref);
+      const num = isLiked ? -1 : 1;
+      const newLikes = doc.data()?.likes + num;
+      tsx.update(docref, {
+        likes: newLikes,
+      });
+      return newLikes;
+    },
+    {
+      onSuccess() {
+        postQuery.refetch();
+      },
+    }
+  );
 
   useEffect(() => {
     if (user?.uid === userId) {
@@ -55,11 +79,14 @@ function PostDetail() {
 
   const handleDelete = () => {
     if (user?.uid === userId && window.confirm('삭제하시겠습니까?')) {
-      docMutation.mutate();
+      deleteMutation.mutate();
     }
   };
 
-  console.log('isShow', isShow);
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    likeMutation.mutate();
+  };
 
   return (
     <>
@@ -90,7 +117,22 @@ function PostDetail() {
                 </MenuContainer>
               </AuthorBox>
               <PostDetailItem data={data} />
+              <PostSideBox>
+                <ButtonContainer>
+                  {isLiked ? (
+                    <BsHeartFill onClick={handleLike} />
+                  ) : (
+                    <BsHeart onClick={handleLike} />
+                  )}
+                  <BiComment />
+                </ButtonContainer>
+                <SideInfo>
+                  <p>{getTimeElapsed(data.created.seconds)},</p>
+                  <p>좋아요: {data.likes}</p>
+                </SideInfo>
+              </PostSideBox>
               <PostTextBox>{data.text}</PostTextBox>
+              <CommentBox>댓글창</CommentBox>
             </Container>
           );
         })}
@@ -100,6 +142,7 @@ function PostDetail() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  user-select: none;
   gap: 10px;
 `;
 
@@ -109,8 +152,6 @@ const AuthorBox = styled.div`
   align-items: center;
   gap: 20px;
   height: 40px;
-
-  overflow: hidden;
 
   img {
     height: 100%;
@@ -153,15 +194,38 @@ const MenuList = styled.ul`
   left: 0;
   z-index: 100;
   width: 100%;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
   li {
     width: 100%;
-    background-color: black;
-    height: 100vh;
+    padding: 5px;
+    cursor: pointer;
   }
 `;
 
+const PostSideBox = styled.div``;
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: ${({ theme }) => theme.comHeight};
+  svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+`;
+
+const SideInfo = styled.div`
+  display: flex;
+  gap: 10px;
+  font-weight: 600;
+`;
+
 const PostTextBox = styled.div``;
+const CommentBox = styled.div``;
 
 PostDetail.defaultProps = {};
 
