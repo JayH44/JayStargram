@@ -18,6 +18,7 @@ import PostDetailItem from '../Post/PostDetailItem';
 import { BiMenu, BiLike, BiComment } from 'react-icons/bi';
 import { BsChatRight, BsBookmark, BsHeart, BsHeartFill } from 'react-icons/bs';
 import { getTimeElapsed } from '../Post/postfunction';
+import Comment from '../Post/Comment';
 
 type PostDetailProps = {};
 
@@ -30,6 +31,7 @@ function PostDetail() {
   const [isShow, setIsShow] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isClicked, setIsCliked] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
   const navigate = useNavigate();
   const ref = query(
     collectionGroup(dbFirebase, 'subposts'),
@@ -99,7 +101,7 @@ function PostDetail() {
     return <div>Loading...</div>;
   }
 
-  if (!data) return <div>Loading...</div>;
+  if (!id || !data) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -133,7 +135,7 @@ function PostDetail() {
             ) : (
               <BsHeart onClick={handleLike} />
             )}
-            <BsChatRight />
+            <BsChatRight onClick={() => setDropdown(!dropdown)} />
           </div>
           <BsBookmark />
         </ButtonContainer>
@@ -143,7 +145,7 @@ function PostDetail() {
         </SideInfo>
       </PostSideBox>
       <PostTextBox>{data.text}</PostTextBox>
-      <CommentBox>댓글창</CommentBox>
+      <Comment id={id} dropdown={dropdown} setDropdown={setDropdown} />
       <LikeBox isClicked={isClicked}>
         {isLiked ? <BsHeartFill /> : <BsHeart />}
       </LikeBox>
@@ -247,7 +249,6 @@ const SideInfo = styled.div`
 `;
 
 const PostTextBox = styled.div``;
-const CommentBox = styled.div``;
 
 const LikeBox = styled.div<{ isClicked: boolean }>`
   position: absolute;

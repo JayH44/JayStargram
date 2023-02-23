@@ -9,6 +9,7 @@ import { deleteFirestore, uploadFirebase } from './../../api/firebaseapi';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import { collection, doc } from 'firebase/firestore';
 import { useFirestoreDocumentMutation } from '@react-query-firebase/firestore';
+import Input from '../common/Input';
 
 type ProfileProps = {};
 
@@ -21,6 +22,7 @@ function Profile() {
   const [active, setActive] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
+  const [text, setText] = useState('');
   const [deleteAction, setDeleteAction] = useState(false);
   const logoutMutation = useAuthSignOut(auth);
 
@@ -77,7 +79,7 @@ function Profile() {
         },
         {
           onSuccess() {
-            alert('프로필 설정이 완료되었습니다.');
+            alert('프로필 사진 설정이 완료되었습니다.');
             setCroppedFiles([]);
             setFiles([]);
             setDeleteAction(false);
@@ -85,6 +87,25 @@ function Profile() {
         }
       );
     }
+  };
+  const handleName = async () => {
+    if (!user.currentUser) return;
+    await updateProfile(user.currentUser, {
+      displayName: text,
+    });
+    userMutation.mutate(
+      {
+        id: user.currentUser.uid,
+        name: text,
+        photo: user.currentUser.photoURL,
+      },
+      {
+        onSuccess() {
+          alert('프로필 이름 설정이 완료되었습니다.');
+          setText('');
+        },
+      }
+    );
   };
 
   //프로필이미지 삭제
@@ -100,6 +121,10 @@ function Profile() {
       }
     }
   };
+
+  if (userMutation.isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container>
@@ -128,7 +153,7 @@ function Profile() {
         </ImageContainer>
         {croppedFiles.length === 0 && !deleteAction ? (
           <Button
-            text='프로필 삭제'
+            text='프로필 사진 삭제'
             type='button'
             bgColor='blue'
             round
@@ -136,7 +161,7 @@ function Profile() {
           ></Button>
         ) : (
           <Button
-            text='프로필 전송'
+            text='프로필 사진 전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
@@ -152,7 +177,19 @@ function Profile() {
       </LeftBox>
       <RightBox>
         <TextInfo>
-          <p>Username: {user.currentUser?.displayName}</p>
+          <p>
+            Username: {user.currentUser?.displayName}
+            <ProfileModBox>
+              <Input
+                type='text'
+                text='name'
+                value={text}
+                active={text.length > 0}
+                handleInputs={(e) => setText(e.target.value)}
+              />
+              <Button text='이름수정' handleOnclick={handleName} />
+            </ProfileModBox>
+          </p>
           <p>Email: {user.currentUser?.email}</p>
         </TextInfo>
       </RightBox>
@@ -220,6 +257,11 @@ const TextInfo = styled.div`
   gap: 30px;
 `;
 
+const ProfileModBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 Profile.defaultProps = {};
 
 export default Profile;

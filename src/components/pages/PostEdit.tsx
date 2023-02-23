@@ -2,7 +2,7 @@ import {
   useFirestoreCollectionMutation,
   useFirestoreDocumentMutation,
 } from '@react-query-firebase/firestore';
-import { collection, doc } from 'firebase/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +27,8 @@ function PostEdit() {
     collection(dbFirebase, 'posts/', user?.uid ?? '', 'subposts')
   );
   const mutation = useFirestoreDocumentMutation(ref);
+  const commentRef = doc(dbFirebase, `comments/${ref.id}`);
+  // const commentMutation = useFirestoreDocumentMutation(commentRef);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -100,9 +102,13 @@ function PostEdit() {
         likeUserArr: [],
       },
       {
-        onSuccess() {
+        async onSuccess() {
           alert('글이 성공적으로 저장되었습니다.');
-          navigate('/post/' + ref.id);
+          console.log(ref.id, commentRef.id);
+          await setDoc(commentRef, {
+            commentArr: [],
+          });
+          navigate('/post/' + ref.id + `?userId=${user?.uid}`);
         },
         onError(error) {
           alert('업로드에 실패하였습니다.');

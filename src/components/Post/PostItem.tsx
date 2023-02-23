@@ -9,7 +9,6 @@ type PostItemProps = {
 
 function PostItem({ data }: PostItemProps) {
   const [idx, setIdx] = useState(0);
-  console.log(data);
   return (
     <Container>
       <Link to={`${data.postId}?userId=${data.userId}`}>

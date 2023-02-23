@@ -8,10 +8,12 @@ import {
   FcPortraitMode,
   FcMms,
 } from 'react-icons/fc';
+import { auth } from '../firebase';
 
 type HeaderProps = {};
 
 function Header() {
+  const user = auth.currentUser;
   return (
     <Container>
       <Wrapper>
@@ -34,7 +36,11 @@ function Header() {
           </li>
           <li>
             <Link to='/profile'>
-              <FcPortraitMode />
+              {user?.photoURL ? (
+                <img src={user?.photoURL} alt={user?.displayName ?? '유저'} />
+              ) : (
+                <FcPortraitMode />
+              )}
             </Link>
           </li>
           <li>
@@ -87,6 +93,12 @@ const GnbList = styled.ul`
     svg {
       width: 25px;
       height: 100%;
+    }
+
+    img {
+      width: 25px;
+      height: 25px;
+      border-radius: 10px;
     }
   }
 `;

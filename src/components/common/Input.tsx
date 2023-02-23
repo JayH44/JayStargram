@@ -41,6 +41,7 @@ const Wrapper = styled.div<InputBoxProps>`
     padding: 0 10px;
     outline-color: blue;
     background-color: transparent;
+    font-size: 0.9rem;
 
     position: relative;
     z-index: 1;
