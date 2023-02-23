@@ -31,8 +31,6 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   if (!user || !id || commentsQuery.isLoading || !commentArr) {
     return <div>Loading...</div>;
   }
-  console.log(commentArr);
-
   const handleSubmit = () => {
     if (text === '') {
       alert('댓글을 입력해주세요');
@@ -81,9 +79,9 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
             </CommentItem>
           ))}
         {commentArr.length > 1 && (
-          <p onClick={() => setDropdown(!dropdown)}>
+          <DropDown onClick={() => setDropdown(!dropdown)}>
             {dropdown ? '댓글올리기' : '댓글더보기'}
-          </p>
+          </DropDown>
         )}
       </CommentList>
       <WriteBox>
@@ -106,6 +104,9 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   );
 }
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   p {
     cursor: pointer;
   }
@@ -114,7 +115,7 @@ const Container = styled.div`
 const CommentList = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
 `;
 const CommentItem = styled.li`
   display: flex;
@@ -138,6 +139,8 @@ const LeftBox = styled.div`
   p {
   }
 `;
+
+const DropDown = styled.div``;
 
 const WriteBox = styled.div`
   display: flex;

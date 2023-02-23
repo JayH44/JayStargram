@@ -24,6 +24,9 @@ code {
   box-sizing: border-box;
   flex-shrink: 0;
 }
+*::-webkit-scrollbar {
+  display: none;
+}
 :root {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;

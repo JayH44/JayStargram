@@ -17,7 +17,6 @@ function SerachResults({ input }: SerachResultsProps) {
     return <div>Loading...</div>;
   }
   const snapshot = userQuery.data;
-  console.log(snapshot);
 
   return (
     <Container>
