@@ -13,9 +13,7 @@ function PostList() {
     orderBy('created', 'desc')
   );
 
-  const postQuery = useFirestoreQuery(['posts'], ref, {
-    subscribe: true,
-  });
+  const postQuery = useFirestoreQuery(['posts'], ref);
 
   if (postQuery.isLoading) {
     return <div>Loading...</div>;

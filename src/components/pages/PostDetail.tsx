@@ -42,9 +42,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     collectionGroup(dbFirebase, 'subposts'),
     where('postId', '==', id)
   );
-  const postQuery = useFirestoreQuery(['post', { id, isLiked }], ref, {
-    subscribe: true,
-  });
+  const postQuery = useFirestoreQuery(['post', { id, isLiked }], ref);
 
   const userRef = doc(dbFirebase, 'users', userId ?? '');
   const userQuery = useFirestoreDocument(['user', userId], userRef, {

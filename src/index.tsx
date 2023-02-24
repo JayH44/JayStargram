@@ -9,7 +9,7 @@ const queryClient = new QueryClient({
     queries: {
       retry: 2,
       retryDelay: 0,
-      staleTime: 1 * 0 * 1000,
+      staleTime: 1 * 10 * 1000,
     },
     mutations: {
       retry: 1,

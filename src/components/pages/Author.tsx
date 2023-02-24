@@ -19,10 +19,7 @@ function Author() {
 
   const { isLoading, data: snapshot } = useFirestoreQuery(
     ['authors', userId],
-    authorRef,
-    {
-      subscribe: true,
-    }
+    authorRef
   );
 
   if (isLoading) {
