@@ -19,9 +19,7 @@ function CommentItem({
   rep,
 }: CommentItemProps) {
   const userRef = doc(dbFirebase, 'users', comment.userId ?? '');
-  const userQuery = useFirestoreDocument(['user', comment.userId], userRef, {
-    subscribe: true,
-  });
+  const userQuery = useFirestoreDocument(['user', comment.userId], userRef);
 
   if (userQuery.isLoading) {
     return <div>User Loading...</div>;

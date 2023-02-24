@@ -137,3 +137,5 @@ flex-shrink 조심!
    left: 0;
    right: 0;
 }
+
+댓글 실시간 update시 로딩문제? why?

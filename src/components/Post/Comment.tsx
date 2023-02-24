@@ -24,9 +24,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   const [repId, setRepId] = useState<string | null>(null);
   const commentRef = doc(collection(dbFirebase, 'comments'), id);
 
-  const commentsQuery = useFirestoreDocument(['comments', id], commentRef, {
-    subscribe: true,
-  });
+  const commentsQuery = useFirestoreDocument(['comments', id], commentRef);
   const commentMutation = useFirestoreDocumentMutation(commentRef, {
     merge: true,
   });
