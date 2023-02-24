@@ -20,7 +20,7 @@ function ProfileBox({ userId }: { userId: string }) {
   return (
     <Container>
       <img src={userPhoto} alt={userName} />
-      <p>{userName}</p>
+      <div>{userName}</div>
     </Container>
   );
 }
@@ -30,7 +30,7 @@ const Container = styled.div`
   align-items: center;
   gap: 20px;
   height: 30px;
-  width: 30%;
+  min-width: 20%;
 
   img {
     height: 100%;
@@ -38,7 +38,7 @@ const Container = styled.div`
     border-radius: 50%;
   }
 
-  p {
+  div {
     font-weight: 600;
   }
 `;

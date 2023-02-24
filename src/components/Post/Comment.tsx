@@ -120,6 +120,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         {(commentArr.length === 1 || (!dropdown && commentArr.length > 1)) && (
           <CommentItem
             comment={commentArr[0]}
+            commentRep={commentRep}
             handleCommentRep={handleCommentRep}
           />
         )}
@@ -128,18 +129,9 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
             <CommentItem
               key={idx}
               comment={comment}
+              commentRep={commentRep}
               handleCommentRep={handleCommentRep}
             />
-            /* {commentRep.filter(
-                (rep: any) => rep.commentRepId === comment.commentId
-              ).length > 0 && (
-                <CommentItem
-                  comment={commentRep.filter(
-                    (rep: any) => rep.commentRepId === comment.commentId
-                  )}
-                  handleCommentRep={handleCommentRep}
-                />
-              )} */
           ))}
         {commentArr.length > 1 && (
           <DropDown onClick={() => setDropdown(!dropdown)}>
@@ -171,8 +163,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
-  p {
-  }
 `;
 
 const CommentList = styled.ul`
