@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import ProfileBox from '../common/ProfileBox';
 import CommentItem from './CommentItem';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,8 +19,7 @@ type CommentProps = {
 };
 
 function Comment({ id, dropdown, setDropdown }: CommentProps) {
-  const { isLoading, data } = useAuthUser(['user'], auth);
-  const user = data;
+  const { isLoading, data: user } = useAuthUser(['user'], auth);
   const [text, setText] = useState('');
   const [repId, setRepId] = useState<string | null>(null);
   const commentRef = doc(collection(dbFirebase, 'comments'), id);
@@ -41,7 +39,9 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
     }
   }, [text]);
 
-  if (!user || !id || commentsQuery.isLoading) {
+  console.log(commentsQuery);
+
+  if (!user || !id || isLoading || commentsQuery.isLoading) {
     return <div>Comment Loading...</div>;
   }
 
@@ -126,7 +126,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         {dropdown &&
           commentArr.map((comment: any, idx: number) => (
             <CommentItem
-              key={idx}
+              key={comment.commentId}
               comment={comment}
               commentRep={commentRep}
               handleCommentRep={handleCommentRep}

@@ -7,9 +7,9 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
-      retryDelay: 0,
-      staleTime: 1 * 10 * 1000,
+      retry: 5,
+      retryDelay: 1,
+      staleTime: 1 * 0 * 1000,
     },
     mutations: {
       retry: 1,

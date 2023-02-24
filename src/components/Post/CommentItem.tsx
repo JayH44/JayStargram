@@ -3,7 +3,6 @@ import { doc } from 'firebase/firestore';
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { dbFirebase } from '../../firebase';
-import ProfileBox from '../common/ProfileBox';
 import { getTimeElapsed } from './postfunction';
 
 type CommentItemProps = {
@@ -42,7 +41,10 @@ function CommentItem({
         <CommentTextBox>
           <Username>
             <div>{userName}</div>
-            <div>{getTimeElapsed(comment.created.seconds)}</div>
+            <div>
+              {comment.created?.seconds &&
+                getTimeElapsed(comment.created.seconds)}
+            </div>
           </Username>
           {comment.text}
           {!rep && (
@@ -95,6 +97,7 @@ const CommentTextBox = styled.div`
 
 const Username = styled.div`
   font-size: 0.8rem;
+  font-weight: 600;
   margin-bottom: 5px;
   display: flex;
   gap: 10px;

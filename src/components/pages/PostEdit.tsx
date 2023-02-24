@@ -1,7 +1,4 @@
-import {
-  useFirestoreCollectionMutation,
-  useFirestoreDocumentMutation,
-} from '@react-query-firebase/firestore';
+import { useFirestoreDocumentMutation } from '@react-query-firebase/firestore';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
@@ -11,8 +8,6 @@ import { uploadFirebase } from '../../api/firebaseapi';
 import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
 import ImgCrop from '../common/ImgCrop';
-
-type PostEditProps = {};
 
 function PostEdit() {
   const user = auth.currentUser;

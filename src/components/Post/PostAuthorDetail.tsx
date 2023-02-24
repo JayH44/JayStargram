@@ -22,15 +22,14 @@ import { getTimeElapsed } from '../Post/postfunction';
 import Comment from '../Post/Comment';
 import { useAuthUser } from '@react-query-firebase/auth';
 
-type PostDetailProps = {
-  postIdParam?: string;
-  userIdParam?: string;
+type PostAuthorDetailProps = {
+  postIdParam: string;
+  userIdParam: string;
 };
 
-function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
-  const { id } = useParams();
-  const { search } = useLocation();
-  const userId = userIdParam || new URLSearchParams(search).get('userId');
+function PostAuthorDetail({ postIdParam, userIdParam }: PostAuthorDetailProps) {
+  const id = postIdParam;
+  const userId = userIdParam;
   const { data: user } = useAuthUser(['user'], auth);
   const [isOwner, setIsowner] = useState(false);
   const [isShow, setIsShow] = useState(false);
@@ -293,6 +292,6 @@ const LikeBox = styled.div<{ isClicked: boolean }>`
   }
 `;
 
-PostDetail.defaultProps = {};
+PostAuthorDetail.defaultProps = {};
 
-export default PostDetail;
+export default PostAuthorDetail;

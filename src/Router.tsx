@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+import Author from './components/pages/Author';
 import Home from './components/pages/Home';
 import Login from './components/pages/Login';
 import Main from './components/pages/Main';
@@ -11,8 +12,6 @@ import PostEdit from './components/pages/PostEdit';
 import PostList from './components/pages/PostList';
 import Profile from './components/pages/Profile';
 import SignUp from './components/pages/SignUp';
-
-type RouterProps = {};
 
 function Router() {
   return (
@@ -27,6 +26,7 @@ function Router() {
             <Route path='edit' element={<PostEdit />} />
             <Route path=':id' element={<PostDetail />} />
           </Route>
+          <Route path='author/:id' element={<Author />} />
           <Route path='profile' element={<Profile />} />
           <Route path='message' element={<Message />} />
         </Route>

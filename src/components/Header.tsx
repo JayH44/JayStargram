@@ -11,8 +11,6 @@ import {
 import { auth } from '../firebase';
 import { useAuthUser } from '@react-query-firebase/auth';
 
-type HeaderProps = {};
-
 function Header() {
   const user = useAuthUser(['user'], auth);
   return (
