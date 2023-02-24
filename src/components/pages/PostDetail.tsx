@@ -40,18 +40,25 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   const navigate = useNavigate();
   const ref = query(
     collectionGroup(dbFirebase, 'subposts'),
-    where('postId', '==', id)
+    where('postId', '==', postIdParam || id)
   );
-  const postQuery = useFirestoreQuery(['post', { id, isLiked }], ref, {
-    subscribe: true,
-  });
+  const postQuery = useFirestoreQuery(
+    ['post', { id: postIdParam || id, isLiked }],
+    ref,
+    {
+      subscribe: true,
+    }
+  );
 
   const userRef = doc(dbFirebase, 'users', userId ?? '');
   const userQuery = useFirestoreDocument(['user', userId], userRef);
   const userPhoto = userQuery.data?.data()?.photo;
   const userName = userQuery.data?.data()?.name;
 
-  const docref = doc(collection(dbFirebase, `posts/${userId}/subposts`), id);
+  const docref = doc(
+    collection(dbFirebase, `posts/${userId}/subposts`),
+    postIdParam || id
+  );
   const deleteMutation = useFirestoreDocumentDeletion(docref, {
     onSuccess() {
       alert('문서 삭제가 성공하였습니다.');
@@ -110,7 +117,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     return <div>Loading...</div>;
   }
 
-  if (!id || !data) return <div>Loading...</div>;
+  if (!(postIdParam || id) || !data) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -154,7 +161,11 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
         </SideInfo>
       </PostSideBox>
       <PostTextBox>{data.text}</PostTextBox>
-      <Comment id={id} dropdown={dropdown} setDropdown={setDropdown} />
+      <Comment
+        id={(postIdParam || id) ?? ''}
+        dropdown={dropdown}
+        setDropdown={setDropdown}
+      />
       <LikeBox isClicked={isClicked}>
         {isLiked ? <BsHeartFill /> : <BsHeart />}
       </LikeBox>

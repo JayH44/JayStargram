@@ -4,11 +4,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { dbFirebase } from '../../firebase';
-import PostAuthorDetail from '../Post/PostAuthorDetail';
-import PostItem from '../Post/PostItem';
 import PostDetail from './PostDetail';
-
-type AuthorProps = {};
 
 function Author() {
   const { id: userId } = useParams();
@@ -32,7 +28,7 @@ function Author() {
         snapshot.docs.map((docSnapshot) => {
           const data = docSnapshot.data();
           return (
-            <PostAuthorDetail
+            <PostDetail
               key={docSnapshot.id}
               postIdParam={data.postId}
               userIdParam={data.userId}
