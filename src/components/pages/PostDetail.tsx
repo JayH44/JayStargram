@@ -42,12 +42,12 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     collectionGroup(dbFirebase, 'subposts'),
     where('postId', '==', id)
   );
-  const postQuery = useFirestoreQuery(['post', { id, isLiked }], ref);
-
-  const userRef = doc(dbFirebase, 'users', userId ?? '');
-  const userQuery = useFirestoreDocument(['user', userId], userRef, {
+  const postQuery = useFirestoreQuery(['post', { id, isLiked }], ref, {
     subscribe: true,
   });
+
+  const userRef = doc(dbFirebase, 'users', userId ?? '');
+  const userQuery = useFirestoreDocument(['user', userId], userRef);
   const userPhoto = userQuery.data?.data()?.photo;
   const userName = userQuery.data?.data()?.name;
 
@@ -268,7 +268,7 @@ const PostTextBox = styled.div``;
 const LikeBox = styled.div<{ isClicked: boolean }>`
   position: absolute;
   opacity: 0;
-  top: 40%;
+  top: 250px;
   left: 45%;
 
   ${({ isClicked }) =>
