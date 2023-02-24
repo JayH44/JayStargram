@@ -1,19 +1,37 @@
+import { useFirestoreDocument } from '@react-query-firebase/firestore';
+import { doc } from 'firebase/firestore';
 import React from 'react';
 import styled from 'styled-components';
+import { dbFirebase } from '../../firebase';
 import ProfileBox from '../common/ProfileBox';
 
 type CommentItemProps = {
   comment: any;
-  handleComment?: React.MouseEventHandler<HTMLDivElement>;
+  handleCommentRep: (name: string, idx: string) => void;
 };
 
-function CommentItem({ comment, handleComment }: CommentItemProps) {
+function CommentItem({ comment, handleCommentRep }: CommentItemProps) {
+  const userRef = doc(dbFirebase, 'users', comment.userId ?? '');
+  const userQuery = useFirestoreDocument(['user', comment.userId], userRef, {
+    subscribe: true,
+  });
+
+  if (userQuery.isLoading) {
+    return <div>User Loading...</div>;
+  }
+
+  const userName = userQuery.data?.data()?.name;
+
   return (
     <Container>
       <ProfileBox userId={comment.userId} />
       <CommentText>
         {comment.text}
-        <div onClick={handleComment}>댓글달기</div>
+        <div
+          onClick={() => handleCommentRep(`@${userName} `, comment.commentId)}
+        >
+          댓글달기
+        </div>
       </CommentText>
     </Container>
   );

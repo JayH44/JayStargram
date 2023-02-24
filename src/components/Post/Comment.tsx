@@ -4,13 +4,14 @@ import {
   useFirestoreDocumentMutation,
 } from '@react-query-firebase/firestore';
 import { collection, doc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import ProfileBox from '../common/ProfileBox';
 import CommentItem from './CommentItem';
+import { v4 as uuidv4 } from 'uuid';
 
 type CommentProps = {
   id: string;
@@ -22,19 +23,42 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   const { isLoading, data } = useAuthUser(['user'], auth);
   const user = data;
   const [text, setText] = useState('');
+  const [repId, setRepId] = useState<string | null>(null);
   const commentRef = doc(collection(dbFirebase, 'comments'), id);
 
   const commentsQuery = useFirestoreDocument(['comments', id], commentRef, {
     subscribe: true,
   });
-  const commentMutation = useFirestoreDocumentMutation(commentRef);
+  const commentMutation = useFirestoreDocumentMutation(commentRef, {
+    merge: true,
+  });
   const commentArr = commentsQuery.data?.data()?.commentArr;
+  const commentRep = commentsQuery.data?.data()?.commentRep;
 
-  if (!user || !id || commentsQuery.isLoading || !commentArr) {
+  useEffect(() => {
+    if (text === '') {
+      setRepId(null);
+    }
+  }, [text]);
+
+  if (!user || !id || commentsQuery.isLoading) {
     return <div>Comment Loading...</div>;
   }
 
-  console.log('rr');
+  if (!commentArr) {
+    commentMutation.mutate({
+      commentArr: [],
+    });
+    return <div>Comment Initializing...</div>;
+  }
+
+  if (!commentRep) {
+    commentMutation.mutate({
+      commentRep: [],
+    });
+    return <div>CommentRep Initializing...</div>;
+  }
+
   const handleSubmit = () => {
     if (text === '') {
       alert('댓글을 입력해주세요');
@@ -42,39 +66,80 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
     }
 
     const created = new Date(Date.now());
-    commentMutation.mutate(
-      {
-        commentArr: commentArr?.concat({
-          postId: id,
-          userId: user.uid,
-          text,
-          created,
-          commentRep: [],
-        }),
-      },
-      {
-        onSuccess() {
-          setText('');
+    const commentId = uuidv4();
+    if (repId !== null) {
+      commentMutation.mutate(
+        {
+          commentRep: commentRep.concat({
+            postId: id,
+            commentRepId: repId,
+            userId: user.uid,
+            text: text,
+            created,
+          }),
         },
-      }
-    );
+        {
+          onSuccess() {
+            setText('');
+          },
+        }
+      );
+      return;
+    }
+
+    if (repId === null) {
+      commentMutation.mutate(
+        {
+          commentArr: commentArr.concat({
+            postId: id,
+            commentId: commentId,
+            userId: user.uid,
+            text,
+            created,
+            commentRep: {},
+          }),
+        },
+        {
+          onSuccess() {
+            setText('');
+          },
+        }
+      );
+      return;
+    }
   };
 
-  const handleComment = () => {};
+  const handleCommentRep = (name: string, idx: string) => {
+    setText(name);
+    setRepId(idx);
+  };
 
   return (
     <Container>
       <CommentList>
         {(commentArr.length === 1 || (!dropdown && commentArr.length > 1)) && (
-          <CommentItem comment={commentArr[0]} handleComment={handleComment} />
+          <CommentItem
+            comment={commentArr[0]}
+            handleCommentRep={handleCommentRep}
+          />
         )}
         {dropdown &&
           commentArr.map((comment: any, idx: number) => (
             <CommentItem
               key={idx}
               comment={comment}
-              handleComment={handleComment}
+              handleCommentRep={handleCommentRep}
             />
+            /* {commentRep.filter(
+                (rep: any) => rep.commentRepId === comment.commentId
+              ).length > 0 && (
+                <CommentItem
+                  comment={commentRep.filter(
+                    (rep: any) => rep.commentRepId === comment.commentId
+                  )}
+                  handleCommentRep={handleCommentRep}
+                />
+              )} */
           ))}
         {commentArr.length > 1 && (
           <DropDown onClick={() => setDropdown(!dropdown)}>
