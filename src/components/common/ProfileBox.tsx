@@ -37,6 +37,10 @@ const Container = styled.div`
     object-fit: cover;
     border-radius: 50%;
   }
+
+  p {
+    font-weight: 600;
+  }
 `;
 
 export default ProfileBox;

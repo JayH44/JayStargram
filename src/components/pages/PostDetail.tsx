@@ -190,6 +190,10 @@ const ProfileContainer = styled.div`
     object-fit: cover;
     border-radius: 50%;
   }
+
+  p {
+    font-weight: 700;
+  }
 `;
 
 const MenuContainer = styled.div`

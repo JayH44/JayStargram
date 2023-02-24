@@ -10,6 +10,7 @@ import { auth, dbFirebase } from '../../firebase';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import ProfileBox from '../common/ProfileBox';
+import CommentItem from './CommentItem';
 
 type CommentProps = {
   id: string;
@@ -40,15 +41,15 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
       return;
     }
 
+    const created = new Date(Date.now());
     commentMutation.mutate(
       {
         commentArr: commentArr?.concat({
           postId: id,
-          commentId: commentArr.length,
           userId: user.uid,
-          userName: user.displayName,
-          userPhoto: user.photoURL,
           text,
+          created,
+          commentRep: [],
         }),
       },
       {
@@ -58,21 +59,22 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
       }
     );
   };
+
+  const handleComment = () => {};
+
   return (
     <Container>
       <CommentList>
         {(commentArr.length === 1 || (!dropdown && commentArr.length > 1)) && (
-          <CommentItem>
-            <ProfileBox userId={commentArr[0].userId} />
-            <p>{commentArr[0].text}</p>
-          </CommentItem>
+          <CommentItem comment={commentArr[0]} handleComment={handleComment} />
         )}
         {dropdown &&
           commentArr.map((comment: any, idx: number) => (
-            <CommentItem key={idx}>
-              <ProfileBox userId={comment.userId} />
-              <p>{comment.text}</p>
-            </CommentItem>
+            <CommentItem
+              key={idx}
+              comment={comment}
+              handleComment={handleComment}
+            />
           ))}
         {commentArr.length > 1 && (
           <DropDown onClick={() => setDropdown(!dropdown)}>
@@ -81,6 +83,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         )}
       </CommentList>
       <WriteBox>
+        <img src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
         <Input
           type='text'
           text='comment'
@@ -104,7 +107,6 @@ const Container = styled.div`
   flex-direction: column;
   gap: 5px;
   p {
-    cursor: pointer;
   }
 `;
 
@@ -113,31 +115,21 @@ const CommentList = styled.ul`
   flex-direction: column;
   gap: 10px;
 `;
-const CommentItem = styled.li`
-  display: flex;
-  align-items: center;
-  gap: 20px;
+
+const DropDown = styled.div`
+  margin-top: 10px;
 `;
-
-const LeftBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  height: 30px;
-  width: 30%;
-
-  img {
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-`;
-
-const DropDown = styled.div``;
 
 const WriteBox = styled.div`
   display: flex;
+  align-items: center;
   gap: 10px;
+
+  img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
 `;
 
 Comment.defaultProps = {};

@@ -92,8 +92,6 @@ function PostEdit() {
       {
         postId: ref.id,
         userId: user?.uid,
-        name: user.displayName,
-        userPhoto: user?.photoURL,
         text,
         photo: photoURL,
         created,
