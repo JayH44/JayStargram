@@ -130,3 +130,10 @@ RTK-query 와 React-query를 동시에 사용하면...
 ---02/24---
 난수발생을 위한 uuid 설치
 flex-shrink 조심!
+헤더 포지션 fixed 가운데 정렬
+.class-name {
+   position: fixed;
+   margin: 0 auto;
+   left: 0;
+   right: 0;
+}

@@ -34,7 +34,7 @@ const Container = styled.div`
   max-width: ${({ theme }) => theme.pageWidth};
 
   margin: 0 auto;
-  padding: 0 10px;
+  padding: 40px 10px;
   background-color: ${({ theme }) => theme.bgColor};
 
   @media (min-width: 800px) {

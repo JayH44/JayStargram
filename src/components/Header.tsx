@@ -58,6 +58,11 @@ function Header() {
   );
 }
 const Container = styled.div`
+  position: fixed;
+  z-index: 1000;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
   background-color: ${({ theme }) => theme.bgColor};
 `;
 
