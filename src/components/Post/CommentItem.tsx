@@ -8,15 +8,15 @@ import { getTimeElapsed } from './postfunction';
 
 type CommentItemProps = {
   comment: any;
-  commentRep: any;
   handleCommentRep: (name: string, idx: string) => void;
+  commentRep?: any;
   rep?: boolean;
 };
 
 function CommentItem({
   comment,
-  commentRep,
   handleCommentRep,
+  commentRep,
   rep,
 }: CommentItemProps) {
   const userRef = doc(dbFirebase, 'users', comment.userId ?? '');
@@ -28,9 +28,9 @@ function CommentItem({
     return <div>User Loading...</div>;
   }
 
-  const findRep = commentRep.filter(
-    (rep: any) => rep.commentRepId === comment.commentId
-  );
+  const findRep =
+    commentRep &&
+    commentRep.filter((rep: any) => rep.commentRepId === comment.commentId);
 
   const userName = userQuery.data?.data()?.name;
   const userPhoto = userQuery.data?.data()?.photo;
@@ -45,21 +45,25 @@ function CommentItem({
             <div>{getTimeElapsed(comment.created.seconds)}</div>
           </Username>
           <CommentText>{comment.text}</CommentText>
-          <CommentButtonBox
-            onClick={() => handleCommentRep(`@${userName} `, comment.commentId)}
-          >
-            댓글달기
-          </CommentButtonBox>
+          {!rep && (
+            <CommentButtonBox
+              onClick={() =>
+                handleCommentRep(`@${userName} `, comment.commentId)
+              }
+            >
+              댓글달기
+            </CommentButtonBox>
+          )}
         </CommentTextBox>
       </Container>
-      {findRep.length > 0 &&
-        findRep.map((comment: any) => (
-          <Container key={comment.userId} rep>
-            <ProfileBox userId={comment.userId} />
-            <CommentTextBox>
-              <CommentText rep>{comment.text}</CommentText>
-            </CommentTextBox>
-          </Container>
+      {(findRep && findRep.length) > 0 &&
+        findRep.map((comment: any, idx: number) => (
+          <CommentItem
+            key={idx}
+            comment={comment}
+            handleCommentRep={handleCommentRep}
+            rep
+          />
         ))}
     </>
   );
@@ -97,7 +101,7 @@ const Username = styled.div`
 `;
 
 const CommentText = styled.div<{ rep?: boolean }>`
-  max-width: ${({ rep }) => (rep ? '60%' : '80%')};
+  max-width: ${({ rep }) => (rep ? '60%' : '85%')};
 `;
 
 const CommentButtonBox = styled.div`
