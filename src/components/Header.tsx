@@ -9,11 +9,12 @@ import {
   FcMms,
 } from 'react-icons/fc';
 import { auth } from '../firebase';
+import { useAuthUser } from '@react-query-firebase/auth';
 
 type HeaderProps = {};
 
 function Header() {
-  const user = auth.currentUser;
+  const user = useAuthUser(['user'], auth);
   return (
     <Container>
       <Wrapper>
@@ -36,8 +37,11 @@ function Header() {
           </li>
           <li>
             <Link to='/profile'>
-              {user?.photoURL ? (
-                <img src={user?.photoURL} alt={user?.displayName ?? '유저'} />
+              {user?.data?.photoURL ? (
+                <img
+                  src={user?.data.photoURL}
+                  alt={user?.data.displayName ?? '유저'}
+                />
               ) : (
                 <FcPortraitMode />
               )}

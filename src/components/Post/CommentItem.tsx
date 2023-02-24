@@ -44,7 +44,7 @@ function CommentItem({
             <div>{userName}</div>
             <div>{getTimeElapsed(comment.created.seconds)}</div>
           </Username>
-          <CommentText>{comment.text}</CommentText>
+          {comment.text}
           {!rep && (
             <CommentButtonBox
               onClick={() =>
@@ -98,10 +98,6 @@ const Username = styled.div`
   margin-bottom: 5px;
   display: flex;
   gap: 10px;
-`;
-
-const CommentText = styled.div<{ rep?: boolean }>`
-  max-width: ${({ rep }) => (rep ? '60%' : '85%')};
 `;
 
 const CommentButtonBox = styled.div`

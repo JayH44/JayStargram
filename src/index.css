@@ -22,7 +22,7 @@ code {
 :after,
 :before {
   box-sizing: border-box;
-  flex-shrink: 0;
+  /* flex-shrink: 0; */
 }
 *::-webkit-scrollbar {
   display: none;

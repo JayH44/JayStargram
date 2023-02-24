@@ -96,7 +96,6 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
             userId: user.uid,
             text,
             created,
-            commentRep: {},
           }),
         },
         {
@@ -173,6 +172,7 @@ const CommentList = styled.ul`
 
 const DropDown = styled.div`
   margin-top: 10px;
+  cursor: pointer;
 `;
 
 const WriteBox = styled.div`

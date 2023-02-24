@@ -129,3 +129,4 @@ RTK-query 와 React-query를 동시에 사용하면...
 
 ---02/24---
 난수발생을 위한 uuid 설치
+flex-shrink 조심!
