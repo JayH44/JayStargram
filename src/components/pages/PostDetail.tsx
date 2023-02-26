@@ -101,7 +101,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     });
     // return newLikes;
   });
-
+  console.log(bookmarkPostIdArr);
   useEffect(() => {
     if (user?.uid === userId) {
       setIsowner(true);
@@ -110,7 +110,8 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     }
   }, [user?.uid, userId]);
 
-  if (!bookmarkPostIdArr) {
+  if (!currentUserQuery.isLoading && !bookmarkPostIdArr) {
+    console.log('?');
     userMutation.mutate({
       bookmarkPostIdArr: [],
     });
@@ -128,10 +129,17 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   }, [data, user?.uid]);
 
   useEffect(() => {
-    if (bookmarkPostIdArr?.indexOf(postIdParam || id) === -1) {
-      setIsBookmarked(false);
-    } else if (bookmarkPostIdArr?.indexOf(postIdParam || id) > -1) {
-      setIsBookmarked(true);
+    if (bookmarkPostIdArr) {
+      const isBooked = bookmarkPostIdArr.filter(
+        (bookmark: { postId: string }) =>
+          bookmark.postId === (postIdParam || id)
+      );
+      console.log(isBooked);
+      if (isBooked?.length === 0) {
+        setIsBookmarked(false);
+      } else if (isBooked?.length) {
+        setIsBookmarked(true);
+      }
     }
   }, [bookmarkPostIdArr, postIdParam, id]);
 
@@ -151,8 +159,10 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
 
   const handleBookmark = () => {
     const newPostIds = isBookmarked
-      ? bookmarkPostIdArr.filter((bid: string) => bid !== (postIdParam || id))
-      : bookmarkPostIdArr.concat(postIdParam || id);
+      ? bookmarkPostIdArr.filter(
+          (bid: { postId: string }) => bid.postId !== (postIdParam || id)
+        )
+      : bookmarkPostIdArr.concat({ postId: postIdParam || id, userId });
 
     userMutation.mutate(
       {
