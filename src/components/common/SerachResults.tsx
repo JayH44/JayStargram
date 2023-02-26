@@ -1,6 +1,7 @@
 import { useFirestoreQuery } from '@react-query-firebase/firestore';
 import { collection, query } from 'firebase/firestore';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { dbFirebase } from '../../firebase';
 
@@ -23,12 +24,13 @@ function SerachResults({ input }: SerachResultsProps) {
       {snapshot &&
         snapshot.docs.map((docSnapshot) => {
           const data = docSnapshot.data();
-          console.log(data);
           return (
-            <SerachItem key={docSnapshot.id}>
-              <img src={data.photo} alt={data.name} />
-              <span>{data.name}</span>
-            </SerachItem>
+            <Link to={`/author/${data.id}`} key={docSnapshot.id}>
+              <SerachItem>
+                <img src={data.photo} alt={data.name} />
+                <span>{data.name}</span>
+              </SerachItem>
+            </Link>
           );
         })}
     </Container>

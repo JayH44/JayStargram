@@ -14,8 +14,7 @@ function Serach() {
   return (
     <Container
       onFocus={() => setFocusOn(true)}
-      onBlur={() => setFocusOn(false)}
-    >
+      onBlur={() => setTimeout(() => setFocusOn(false), 200)}>
       <Input
         type='text'
         text='검색'

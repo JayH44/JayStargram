@@ -22,6 +22,10 @@ function Author() {
     return <div>Document Loading....</div>;
   }
 
+  if (snapshot?.empty) {
+    return <div>사용자 이름으로 작성된 포스트가 없습니다.</div>;
+  }
+
   return (
     <Container>
       {snapshot &&
