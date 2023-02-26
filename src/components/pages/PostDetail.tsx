@@ -101,7 +101,6 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     });
     // return newLikes;
   });
-  console.log(bookmarkPostIdArr);
   useEffect(() => {
     if (user?.uid === userId) {
       setIsowner(true);
@@ -134,7 +133,6 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
         (bookmark: { postId: string }) =>
           bookmark.postId === (postIdParam || id)
       );
-      console.log(isBooked);
       if (isBooked?.length === 0) {
         setIsBookmarked(false);
       } else if (isBooked?.length) {
@@ -143,7 +141,6 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     }
   }, [bookmarkPostIdArr, postIdParam, id]);
 
-  console.log('dd');
   const handleDelete = () => {
     if (user?.uid === userId && window.confirm('삭제하시겠습니까?')) {
       deleteMutation.mutate();
@@ -199,7 +196,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
                   <li>수정</li>
                 </>
               ) : (
-                <li>즐겨찾기</li>
+                <li onClick={handleBookmark}>즐겨찾기</li>
               )}
             </MenuList>
           )}

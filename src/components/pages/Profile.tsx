@@ -237,7 +237,7 @@ const ImageContainer = styled.label<{ active: boolean }>`
     ${({ active }) =>
       active &&
       css`
-        transform: rotate(45deg);
+        transform: rotate(135deg);
       `}
   }
 `;

@@ -26,14 +26,6 @@ function Home() {
   const bookmarkPostIdArr = currentUserQuery.data?.data()?.bookmarkPostIdArr;
   const name = currentUserQuery.data?.data()?.name;
 
-  console.log(bookmarkPostIdArr);
-
-  // const bookmarkPostIdRef = query(
-  //   collectionGroup(dbFirebase, 'subposts'),
-  //   where(postId, '==', postId),
-  //   orderBy('created', 'desc')
-  // );
-
   if (authUserLoading || currentUserQuery.isLoading) {
     return <div>User Loading...</div>;
   }
@@ -45,6 +37,7 @@ function Home() {
         bookmarkPostIdArr.map(
           (bookmark: { postId: string; userId: string }) => (
             <PostDetail
+              key={bookmark.postId}
               postIdParam={bookmark.postId}
               userIdParam={bookmark.userId}
             />
@@ -54,10 +47,10 @@ function Home() {
   );
 }
 const Container = styled.div`
-  h2 {
-    text-align: center;
-    margin: 10px;
-  }
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 Home.defaultProps = {};
