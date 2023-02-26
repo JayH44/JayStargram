@@ -241,7 +241,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 10px;
   max-width: ${({ theme }) => theme.pageWidth};
-
+  width: 100%;
   position: relative;
   user-select: none;
 `;

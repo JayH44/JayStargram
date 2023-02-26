@@ -35,6 +35,7 @@ const Container = styled.li`
   border-radius: 10px;
 
   a {
+    /* display: block; */
     position: relative;
     -webkit-user-drag: none;
   }
@@ -42,13 +43,12 @@ const Container = styled.li`
 
 const PostItemWrapper = styled.div<{ idx: number }>`
   display: flex;
-  width: 100%;
   transform: translateX(${({ idx }) => -idx * 100}%);
   transition: transform 0.4s;
 
   img {
-    width: 100%;
-    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
     object-fit: cover;
     -webkit-user-drag: none;
   }

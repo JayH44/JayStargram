@@ -41,6 +41,8 @@ const ImgBoxWrapper = styled.div<{ idx: number }>`
 
   img {
     min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
   }
 `;
 const BtnBox = styled.div`
