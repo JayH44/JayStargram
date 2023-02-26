@@ -25,7 +25,12 @@ code {
   /* flex-shrink: 0; */
 }
 *::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
+  width: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: hsla(227, 67%, 28%, 0.49);
+  border-radius: 100px;
 }
 :root {
   -webkit-tap-highlight-color: transparent;
@@ -40,6 +45,7 @@ code {
 html,
 body {
   height: 100%;
+  overflow: overlay;
 }
 img,
 picture,
