@@ -1,6 +1,7 @@
 import {
   useFirestoreDocument,
   useFirestoreDocumentDeletion,
+  useFirestoreDocumentMutation,
   useFirestoreQuery,
   useFirestoreTransaction,
 } from '@react-query-firebase/firestore';
@@ -17,7 +18,13 @@ import styled, { css } from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import PostDetailItem from '../Post/PostDetailItem';
 import { BiMenu } from 'react-icons/bi';
-import { BsChatRight, BsBookmark, BsHeart, BsHeartFill } from 'react-icons/bs';
+import {
+  BsChatRight,
+  BsBookmark,
+  BsBookmarkFill,
+  BsHeart,
+  BsHeartFill,
+} from 'react-icons/bs';
 import { getTimeElapsed } from '../Post/postfunction';
 import Comment from '../Post/Comment';
 import { useAuthUser } from '@react-query-firebase/auth';
@@ -37,6 +44,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isClicked, setIsCliked] = useState(false);
   const [dropdown, setDropdown] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const navigate = useNavigate();
   const ref = query(
     collectionGroup(dbFirebase, 'subposts'),
@@ -54,6 +62,19 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   const userQuery = useFirestoreDocument(['user', userId], userRef);
   const userPhoto = userQuery.data?.data()?.photo;
   const userName = userQuery.data?.data()?.name;
+
+  const currentUserRef = doc(collection(dbFirebase, 'users'), user?.uid);
+  const currentUserQuery = useFirestoreDocument(
+    ['currentUser', user?.uid],
+    currentUserRef,
+    {
+      subscribe: true,
+    }
+  );
+  const bookmarkPostIdArr = currentUserQuery.data?.data()?.bookmarkPostIdArr;
+  const userMutation = useFirestoreDocumentMutation(currentUserRef, {
+    merge: true,
+  });
 
   const docref = doc(
     collection(dbFirebase, `posts/${userId}/subposts`),
@@ -89,6 +110,12 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     }
   }, [user?.uid, userId]);
 
+  if (!bookmarkPostIdArr) {
+    userMutation.mutate({
+      bookmarkPostIdArr: [],
+    });
+  }
+
   const snapshot = postQuery.data;
   const data = snapshot?.docs[0].data();
 
@@ -100,6 +127,15 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     }
   }, [data, user?.uid]);
 
+  useEffect(() => {
+    if (bookmarkPostIdArr?.indexOf(postIdParam || id) === -1) {
+      setIsBookmarked(false);
+    } else if (bookmarkPostIdArr?.indexOf(postIdParam || id) > -1) {
+      setIsBookmarked(true);
+    }
+  }, [bookmarkPostIdArr, postIdParam, id]);
+
+  console.log('dd');
   const handleDelete = () => {
     if (user?.uid === userId && window.confirm('삭제하시겠습니까?')) {
       deleteMutation.mutate();
@@ -111,6 +147,23 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     setIsCliked(true);
     setTimeout(() => setIsCliked(false), 2000);
     likeMutation.mutate();
+  };
+
+  const handleBookmark = () => {
+    const newPostIds = isBookmarked
+      ? bookmarkPostIdArr.filter((bid: string) => bid !== (postIdParam || id))
+      : bookmarkPostIdArr.concat(postIdParam || id);
+
+    userMutation.mutate(
+      {
+        bookmarkPostIdArr: newPostIds,
+      },
+      {
+        onSuccess() {
+          setIsBookmarked(!isBookmarked);
+        },
+      }
+    );
   };
 
   if (postQuery.isLoading || userQuery.isLoading) {
@@ -153,7 +206,11 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
             )}
             <BsChatRight onClick={() => setDropdown(!dropdown)} />
           </div>
-          <BsBookmark />
+          {isBookmarked ? (
+            <BsBookmarkFill onClick={handleBookmark} />
+          ) : (
+            <BsBookmark onClick={handleBookmark} />
+          )}
         </ButtonContainer>
         <SideInfo>
           <p>좋아요: {data.likeUserArr.length}개,</p>

@@ -36,7 +36,9 @@ function Profile() {
   });
 
   const ref = doc(collection(dbFirebase, 'users'), user?.uid);
-  const userMutation = useFirestoreDocumentMutation(ref);
+  const userMutation = useFirestoreDocumentMutation(ref, {
+    merge: true,
+  });
 
   const handleLogout = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) logoutMutation.mutate();
@@ -82,6 +84,7 @@ function Profile() {
           id: user.uid,
           name: user.displayName,
           photo: user.photoURL,
+          bookmarkPostIdArr: [],
         },
         {
           onSuccess() {
@@ -104,6 +107,7 @@ function Profile() {
         id: user.uid,
         name: text,
         photo: user.photoURL,
+        bookmarkPostIdArr: [],
       },
       {
         onSuccess() {

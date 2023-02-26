@@ -9,6 +9,7 @@ type PostDetailItemProps = {
 
 function PostDetailItem({ data, onDoubleClick }: PostDetailItemProps) {
   const [idx, setIdx] = useState(0);
+
   return (
     <Container onDoubleClick={onDoubleClick}>
       <ImgBoxWrapper idx={idx}>
@@ -22,8 +23,7 @@ function PostDetailItem({ data, onDoubleClick }: PostDetailItemProps) {
           <LabelBtn
             key={bidx}
             active={bidx === idx}
-            onClick={() => setIdx(bidx)}
-          ></LabelBtn>
+            onClick={() => setIdx(bidx)}></LabelBtn>
         ))}
       </BtnBox>
     </Container>
