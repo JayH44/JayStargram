@@ -13,7 +13,7 @@ import Input from '../common/Input';
 import { useNavigate } from 'react-router-dom';
 
 function Profile() {
-  const { data } = useAuthUser(['user'], auth);
+  const { data } = useAuthUser(['authUser'], auth);
   const user = data;
   const [photoURL, setPhotoURL] = useState<string | undefined>(
     user?.photoURL || undefined

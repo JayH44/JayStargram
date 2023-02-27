@@ -19,7 +19,7 @@ type CommentProps = {
 };
 
 function Comment({ id, dropdown, setDropdown }: CommentProps) {
-  const { isLoading, data: user } = useAuthUser(['user'], auth);
+  const { isLoading, data: user } = useAuthUser(['authUser'], auth);
   const [text, setText] = useState('');
   const [repId, setRepId] = useState<string | null>(null);
   const commentRef = doc(collection(dbFirebase, 'comments'), id);

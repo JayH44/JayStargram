@@ -9,7 +9,7 @@ import MessageItem from '../Messages/MessageItem';
 import { BiPlusCircle } from 'react-icons/bi';
 
 function Message() {
-  const { isLoading: userLoading, data: user } = useAuthUser('user', auth);
+  const { isLoading: userLoading, data: user } = useAuthUser('authUser', auth);
   const currentUserRef = doc(dbFirebase, 'users', user?.uid ?? '');
   const currentUserQuery = useFirestoreDocument(
     ['users', user?.uid],

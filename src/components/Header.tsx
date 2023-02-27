@@ -12,7 +12,7 @@ import { auth } from '../firebase';
 import { useAuthUser } from '@react-query-firebase/auth';
 
 function Header() {
-  const user = useAuthUser(['user'], auth);
+  const user = useAuthUser(['authUser'], auth);
   return (
     <Container>
       <Wrapper>

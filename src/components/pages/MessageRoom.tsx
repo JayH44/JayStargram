@@ -15,13 +15,18 @@ import Input from '../common/Input';
 import { v4 as uuidv4 } from 'uuid';
 import { useQueryClient } from 'react-query';
 import { getTimeString } from '../Post/postfunction';
+import SerachResults from '../common/SerachResults';
 
 function MessageRoom() {
   const { id: chatRoomId } = useParams();
   const [newMessage, setNewMessage] = useState('');
   const inputRef: React.ForwardedRef<HTMLInputElement> = useRef(null);
   const bottomListRef: React.RefObject<HTMLDivElement> = useRef(null);
-  const { data: currnetUser } = useAuthUser(['users'], auth);
+  const [showUsers, setShowUsers] = useState(false);
+  const { isLoading: currentUserLoading, data: currnetUser } = useAuthUser(
+    ['authUser'],
+    auth
+  );
   const queryClient = useQueryClient();
 
   const messageColl = collection(
@@ -74,7 +79,7 @@ function MessageRoom() {
     }
   }, [mutation]);
 
-  if (isLoading) {
+  if (currentUserLoading || isLoading) {
     return <div>메세지 불러오기중 ... </div>;
   }
 
@@ -114,7 +119,9 @@ function MessageRoom() {
     }
   };
 
-  const handleChatUsers = () => {};
+  const handleChatUsers = () => {
+    setShowUsers(!showUsers);
+  };
 
   return (
     <Container>
@@ -123,12 +130,13 @@ function MessageRoom() {
           <BiArrowBack />
         </Link>
         <ChatRoomNameBox onClick={handleChatUsers}>
-          {chatRoomName},
+          <p>{chatRoomName},</p>
+          {showUsers && <SerachResults />}
         </ChatRoomNameBox>
         <ChatUserNameBox>
           참여중인 유저:
           {chatUsers.map((user: string) => (
-            <ProfileBox userId={user} nameOnly />
+            <ProfileBox key={user} userId={user} nameOnly />
           ))}
         </ChatUserNameBox>
       </MessageHeader>
@@ -200,6 +208,7 @@ const MessageHeader = styled.div`
   }
 `;
 const ChatRoomNameBox = styled.div`
+  position: relative;
   font-weight: 600;
   cursor: pointer;
 `;

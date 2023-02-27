@@ -30,7 +30,7 @@ type PostAuthorDetailProps = {
 function PostAuthorDetail({ postIdParam, userIdParam }: PostAuthorDetailProps) {
   const id = postIdParam;
   const userId = userIdParam;
-  const { data: user } = useAuthUser(['user'], auth);
+  const { data: user } = useAuthUser(['authUser'], auth);
   const [isOwner, setIsowner] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [isLiked, setIsLiked] = useState(false);

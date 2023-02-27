@@ -6,7 +6,7 @@ import { auth } from '../../firebase';
 import { useAuthUser } from '@react-query-firebase/auth';
 
 function Main() {
-  const user = useAuthUser(['user'], auth);
+  const user = useAuthUser(['authUser'], auth);
 
   if (user.isLoading) {
     return <LoadingContainer>Loading...</LoadingContainer>;

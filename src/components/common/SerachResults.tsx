@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { dbFirebase } from '../../firebase';
 
 type SerachResultsProps = {
-  input: string;
+  input?: string;
 };
 
 function SerachResults({ input }: SerachResultsProps) {
@@ -14,10 +14,11 @@ function SerachResults({ input }: SerachResultsProps) {
   const userQuery = useFirestoreQuery(['users'], ref, {
     subscribe: true,
   });
-  if (userQuery.isLoading) {
+  const snapshot = userQuery.data;
+
+  if (userQuery.isLoading || !snapshot) {
     return <div>Loading...</div>;
   }
-  const snapshot = userQuery.data;
 
   return (
     <Container>
