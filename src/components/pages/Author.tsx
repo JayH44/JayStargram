@@ -1,6 +1,7 @@
 import { useFirestoreInfiniteQuery } from '@react-query-firebase/firestore';
 import {
   collection,
+  getCountFromServer,
   limit,
   orderBy,
   query,
@@ -14,13 +15,22 @@ import PostDetail from './PostDetail';
 
 function Author() {
   const { id: userId } = useParams();
+  const totalNum = useRef(0);
   const bottom = useRef(null);
-  const queryNumbers = 3;
+  const reqQueryNum = 3;
+
+  const authorColl = collection(dbFirebase, 'posts/' + userId + '/subposts');
+
+  useEffect(() => {
+    getCountFromServer(authorColl).then((res) => {
+      totalNum.current = res.data().count;
+    });
+  }, [authorColl]);
 
   const authorRef = query(
     collection(dbFirebase, 'posts/' + userId + '/subposts'),
     orderBy('created', 'desc'),
-    limit(queryNumbers)
+    limit(reqQueryNum)
   );
 
   const authorQuery = useFirestoreInfiniteQuery(
@@ -33,10 +43,15 @@ function Author() {
   );
   const { isLoading, data: snapshot } = authorQuery;
 
-  const currentSize = snapshot?.pages[snapshot?.pages.length - 1].size;
+  const totalPageNum = snapshot?.pages.length;
 
   useEffect(() => {
-    if (bottom && bottom.current && currentSize === queryNumbers) {
+    if (
+      bottom &&
+      bottom.current &&
+      totalPageNum &&
+      totalPageNum < Math.ceil(totalNum.current / reqQueryNum)
+    ) {
       const observer = new IntersectionObserver(
         ([entry]) => entry.isIntersecting && authorQuery.fetchNextPage(),
         { root: null, rootMargin: '0px', threshold: 0 }
@@ -44,13 +59,11 @@ function Author() {
       observer.observe(bottom.current);
       return () => observer && observer.disconnect();
     }
-  }, [bottom, authorQuery, currentSize]);
+  }, [bottom, authorQuery, totalPageNum]);
 
   if (isLoading) {
     return <div>Document Loading....</div>;
   }
-
-  console.log(currentSize);
 
   // if (snapshot?.empty) {
   //   return <div>사용자 이름으로 작성된 포스트가 없습니다.</div>;

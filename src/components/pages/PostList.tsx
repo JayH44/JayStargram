@@ -1,6 +1,7 @@
 import { useFirestoreInfiniteQuery } from '@react-query-firebase/firestore';
 import {
   collectionGroup,
+  getCountFromServer,
   limit,
   orderBy,
   query,
@@ -13,20 +14,32 @@ import PostItem from '../Post/PostItem';
 
 function PostList() {
   const bottom = useRef(null);
-  const queryNumbers = 8;
+  const totalNum = useRef(0);
+  const reqQueryNum = 8;
 
-  const collGruop = collectionGroup(dbFirebase, 'subposts');
-  const ref = query(collGruop, orderBy('created', 'desc'), limit(queryNumbers));
+  const postColl = collectionGroup(dbFirebase, 'subposts');
+  useEffect(() => {
+    getCountFromServer(postColl).then((res) => {
+      totalNum.current = res.data().count;
+    });
+  }, [postColl]);
+
+  const ref = query(postColl, orderBy('created', 'desc'), limit(reqQueryNum));
   const postQuery = useFirestoreInfiniteQuery('posts', ref, (snapshot) => {
     const lastDocument = snapshot.docs[snapshot.docs.length - 1];
     return query(ref, startAfter(lastDocument));
   });
 
   const { data: snapshot } = postQuery;
-  const currentSize = snapshot?.pages[snapshot?.pages.length - 1].size;
+  const totalPageNum = snapshot?.pages.length;
 
   useEffect(() => {
-    if (bottom && bottom.current && currentSize === queryNumbers) {
+    if (
+      bottom &&
+      bottom.current &&
+      totalPageNum &&
+      totalPageNum < Math.ceil(totalNum.current / reqQueryNum)
+    ) {
       const observer = new IntersectionObserver(
         ([entry]) => entry.isIntersecting && postQuery.fetchNextPage(),
         { root: null, rootMargin: '0px', threshold: 0 }
@@ -34,7 +47,7 @@ function PostList() {
       observer.observe(bottom.current);
       return () => observer && observer.disconnect();
     }
-  }, [bottom, postQuery, currentSize]);
+  }, [bottom, postQuery, totalPageNum]);
 
   if (postQuery.isLoading) {
     return <div>Loading...</div>;
