@@ -139,3 +139,11 @@ flex-shrink 조심!
 }
 
 댓글 실시간 update시 로딩문제? why?
+firebase 의 실시간 구독과 여러유저시 충돌문제
+
+----02/27----
+useFirestoreInfiniteQuery 사용시
+nextPage 에 관한 여부값이 정상작동하지 않는다.
+Custom 으로 firebase 에서 지원하는 count 이용하여 로직구현
+
+
