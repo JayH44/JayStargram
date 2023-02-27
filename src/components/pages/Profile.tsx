@@ -141,8 +141,7 @@ function Profile() {
         <ImageContainer
           htmlFor='profileInput'
           active={active}
-          onClick={handleClick}
-        >
+          onClick={handleClick}>
           <input
             type='file'
             accept='image/*'
@@ -165,23 +164,20 @@ function Profile() {
             type='button'
             bgColor='blue'
             round
-            handleOnclick={deleteImage}
-          ></Button>
+            handleOnclick={deleteImage}></Button>
         ) : (
           <Button
             text='프로필 사진 전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
-            handleOnclick={submitImage}
-          ></Button>
+            handleOnclick={submitImage}></Button>
         )}
         <Button
           text='Logout'
           type='button'
           round
-          handleOnclick={handleLogout}
-        ></Button>
+          handleOnclick={handleLogout}></Button>
       </LeftBox>
       <RightBox>
         <TextInfo>
@@ -189,10 +185,10 @@ function Profile() {
           <ProfileModBox>
             <Input
               type='text'
-              text='name'
+              name='name'
               value={text}
               active={text.length > 0}
-              handleInputs={(e) => setText(e.target.value)}
+              onChange={(e) => setText(e.target.value)}
             />
             <Button text='이름수정' handleOnclick={handleName} />
           </ProfileModBox>

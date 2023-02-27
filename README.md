@@ -21,6 +21,8 @@ React 구성계획
 무엇을 컴포넌트 모듈화 할것인가?
 
 폴더 구조
+
+```bash
 src
 index.tsx
 App.tsx
@@ -35,3 +37,62 @@ Router.tsx
 ------각기능별폴더
 
 ---redux
+
+```
+
+```bash
+jaystargram
+├─ src
+│ ├─ api
+│ │ └─ firebaseapi.ts
+│ ├─ App.css
+│ ├─ App.test.tsx
+│ ├─ App.tsx
+│ ├─ components
+│ │ ├─ common
+│ │ │ ├─ Button.tsx
+│ │ │ ├─ Form.tsx
+│ │ │ ├─ ImgCrop.tsx
+│ │ │ ├─ Input.tsx
+│ │ │ ├─ ProfileBox.tsx
+│ │ │ ├─ Serach.tsx
+│ │ │ └─ SerachResults.tsx
+│ │ ├─ Header.tsx
+│ │ ├─ Messages
+│ │ │ └─ MessageItem.tsx
+│ │ ├─ pages
+│ │ │ ├─ Author.tsx
+│ │ │ ├─ Home.tsx
+│ │ │ ├─ Login.tsx
+│ │ │ ├─ Main.tsx
+│ │ │ ├─ Message.tsx
+│ │ │ ├─ MessageRoom.tsx
+│ │ │ ├─ Post.tsx
+│ │ │ ├─ PostDetail.tsx
+│ │ │ ├─ PostEdit.tsx
+│ │ │ ├─ PostList.tsx
+│ │ │ ├─ Profile.tsx
+│ │ │ └─ SignUp.tsx
+│ │ └─ Post
+│ │ ├─ Comment.tsx
+│ │ ├─ CommentItem.tsx
+│ │ ├─ PostAuthorDetail.tsx
+│ │ ├─ PostDetailItem.tsx
+│ │ ├─ postfunction.ts
+│ │ └─ PostItem.tsx
+│ ├─ customhook
+│ ├─ firebase
+│ │ └─ index.ts
+│ ├─ index.css
+│ ├─ index.tsx
+│ ├─ logo.svg
+│ ├─ react-app-env.d.ts
+│ ├─ reportWebVitals.ts
+│ ├─ Router.tsx
+│ ├─ setupTests.ts
+│ ├─ Styled.d.ts
+│ └─ theme.ts
+├─ tree.txt
+├─ tsconfig.json
+└─ 진행정리사항.txt
+```

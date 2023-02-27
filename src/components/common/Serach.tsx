@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Input from './Input';
 import { BsSearch } from 'react-icons/bs';
 import SerachResults from './SerachResults';
-type SerachProps = {};
 
 function Serach() {
   const [input, setInput] = useState('');
@@ -17,11 +16,11 @@ function Serach() {
       onBlur={() => setTimeout(() => setFocusOn(false), 200)}>
       <Input
         type='text'
-        text='검색'
+        name='검색'
         value={input}
         active={input.length > 0}
-        handleInputs={handleInput}
-        placeholder={
+        onChange={handleInput}
+        customplaceholder={
           <>
             <BsSearch /> <p>검색</p>
           </>

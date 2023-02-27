@@ -1,41 +1,26 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-type InputProps = {
-  type: string;
-  text: string;
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   active: boolean;
-  placeholder: string | React.ReactNode;
+  customplaceholder?: string | React.ReactNode;
   width?: string;
   height?: string;
-  value?: string;
-  inputRef?: React.RefObject<HTMLInputElement>;
-  handleInputs?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+}
 
 type InputBoxProps = Pick<InputProps, 'width' | 'height'>;
 
 function Input({
-  type,
-  text,
-  active,
-  placeholder,
-  handleInputs,
-  inputRef,
-  value,
   width,
   height,
+  active,
+  customplaceholder,
+  ...props
 }: InputProps) {
   return (
     <Wrapper width={width} height={height}>
-      <Placeholder active={active}>{placeholder}</Placeholder>
-      <input
-        type={type}
-        name={text}
-        onChange={handleInputs}
-        value={value}
-        ref={inputRef}
-      />
+      <Placeholder active={active}>{customplaceholder}</Placeholder>
+      <input {...props} />
     </Wrapper>
   );
 }
@@ -83,7 +68,7 @@ const Placeholder = styled.div<{ active: boolean }>`
 `;
 
 Input.defaultProps = {
-  placeholder: '입력해주세요',
+  customplaceholder: '입력해주세요',
   active: false,
 };
 

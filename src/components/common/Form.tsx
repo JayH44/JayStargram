@@ -39,11 +39,11 @@ function Form({ title, InputData, inputs, setInputs, onSubmit }: FormProps) {
           <Input
             key={idx}
             type={type}
-            text={text}
-            placeholder={placeholder}
+            name={text}
+            customplaceholder={placeholder}
             value={inputs[`${text}`]}
             active={inputs[`${text}`]?.length > 0}
-            handleInputs={handleInputs}
+            onChange={handleInputs}
           />
         ))}
       </InputsContainer>

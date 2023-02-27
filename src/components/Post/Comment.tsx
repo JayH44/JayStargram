@@ -140,11 +140,11 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         <img src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
         <Input
           type='text'
-          text='comment'
-          placeholder='댓글을 입력해 주세요'
+          name='comment'
+          customplaceholder='댓글을 입력해 주세요'
           value={text}
           active={text.length > 0}
-          handleInputs={(e) => setText(e.target.value)}
+          onChange={(e) => setText(e.target.value)}
         />
         <Button
           width='50px'
