@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref } from 'react';
+import React, { forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {

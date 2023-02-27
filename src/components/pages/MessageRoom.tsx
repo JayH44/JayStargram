@@ -32,6 +32,7 @@ function MessageRoom() {
   const chatRef = doc(dbFirebase, 'messages/' + chatRoomId);
   const chatRoomQuery = useFirestoreDocument(['chatRoom', chatRoomId], chatRef);
   const chatRoomName = chatRoomQuery?.data?.data()?.chatRoomName;
+  const chatUsers = chatRoomQuery?.data?.data()?.chatUsers;
 
   const messageQueryRef = query(
     messageColl,
@@ -76,6 +77,10 @@ function MessageRoom() {
   if (isLoading) {
     return <div>메세지 불러오기중 ... </div>;
   }
+
+  if (sortMsg?.length === 0) {
+    return <div></div>;
+  }
   console.log(messageQuery);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,13 +114,23 @@ function MessageRoom() {
     }
   };
 
+  const handleChatUsers = () => {};
+
   return (
     <Container>
       <MessageHeader>
         <Link to='/message'>
           <BiArrowBack />
         </Link>
-        <div>채팅방이름: {chatRoomName}</div>, <div>대화참여중인 유저:</div>
+        <ChatRoomNameBox onClick={handleChatUsers}>
+          {chatRoomName},
+        </ChatRoomNameBox>
+        <ChatUserNameBox>
+          참여중인 유저:
+          {chatUsers.map((user: string) => (
+            <ProfileBox userId={user} nameOnly />
+          ))}
+        </ChatUserNameBox>
       </MessageHeader>
       <MessageList>
         {sortMsg?.map((msg) => {
@@ -169,18 +184,29 @@ const MessageHeader = styled.div`
   align-items: center;
 
   position: fixed;
-  left: 0;
-  width: 100%;
+  top: 40px;
+
+  width: 96%;
   height: 40px;
+  max-width: 780px;
+
   background-color: ${({ theme }) => theme.bgColor};
   padding: 5px;
-  border: 1px solid ${({ theme }) => theme.bdColor};
 
   svg {
     cursor: pointer;
     width: 25px;
     height: 25px;
   }
+`;
+const ChatRoomNameBox = styled.div`
+  font-weight: 600;
+  cursor: pointer;
+`;
+const ChatUserNameBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
 `;
 const MessageList = styled.ul`
   margin-top: 40px;
@@ -198,6 +224,7 @@ const MessageItem = styled.li<{ isOwner?: boolean }>`
     margin: 2px;
     padding: 5px;
     background-color: #f1e5e5;
+    max-width: 70%;
 
     ${({ isOwner }) =>
       isOwner &&
@@ -211,16 +238,18 @@ const MessageItem = styled.li<{ isOwner?: boolean }>`
 const InputForm = styled.form`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   position: fixed;
   bottom: 0;
   z-index: 100;
-  width: 100%;
-  max-width: ${({ theme }) => theme.pageWidth};
-  padding-bottom: 20px;
+  width: 96%;
+  max-width: 780px;
+  padding: 10px 0;
   background-color: ${({ theme }) => theme.bgColor};
 
   input {
+    flex: 1;
     padding: 0 10px;
     border-radius: 10px;
   }

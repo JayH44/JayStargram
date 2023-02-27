@@ -9,7 +9,7 @@ import MessageItem from '../Messages/MessageItem';
 import { BiPlusCircle } from 'react-icons/bi';
 
 function Message() {
-  const { isLoading: chatRoomLoading, data: user } = useAuthUser('user', auth);
+  const { isLoading: userLoading, data: user } = useAuthUser('user', auth);
   const currentUserRef = doc(dbFirebase, 'users', user?.uid ?? '');
   const currentUserQuery = useFirestoreDocument(
     ['users', user?.uid],
@@ -20,7 +20,7 @@ function Message() {
   const name = currentUserQuery.data?.data()?.name;
   const id = currentUserQuery.data?.data()?.id;
 
-  if (chatRoomLoading || currentUserQuery.isLoading) {
+  if (userLoading || currentUserQuery.isLoading) {
     return <div>User Loading...</div>;
   }
 
@@ -39,11 +39,12 @@ function Message() {
         </button>
       </MessageTop>
       <ul>
-        {chatRoomId.map((cid: string) => (
-          <Link to={cid} key={cid}>
-            <MessageItem chatRoomId={cid} userId={id} />
-          </Link>
-        ))}
+        {chatRoomId &&
+          chatRoomId.map((cid: string) => (
+            <Link to={cid} key={cid}>
+              <MessageItem chatRoomId={cid} userId={id} />
+            </Link>
+          ))}
       </ul>
     </Container>
   );
@@ -67,15 +68,6 @@ const MessageTop = styled.div`
     width: 25px;
     height: 25px;
   }
-`;
-
-const ChatRoomItem = styled.li`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid ${({ theme }) => theme.bdColor};
-  border-radius: 10px;
-  padding: 10px;
 `;
 
 Message.defaultProps = {};
