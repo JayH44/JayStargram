@@ -19,7 +19,7 @@ import { getTimeString } from '../Post/postfunction';
 function MessageRoom() {
   const { id: chatRoomId } = useParams();
   const [newMessage, setNewMessage] = useState('');
-  const inputRef: React.RefObject<HTMLInputElement> = useRef(null);
+  const inputRef: React.ForwardedRef<HTMLInputElement> = useRef(null);
   const bottomListRef: React.RefObject<HTMLDivElement> = useRef(null);
   const { data: currnetUser } = useAuthUser(['users'], auth);
   const queryClient = useQueryClient();
@@ -141,12 +141,14 @@ function MessageRoom() {
         })}
       </MessageList>
       <InputForm onSubmit={handleOnSubmit}>
-        <input
+        <Input
           ref={inputRef}
           type='text'
+          width='90%'
+          active={newMessage.length > 0}
           value={newMessage}
           onChange={handleOnChange}
-          placeholder='메세지를 입력하세요'
+          customplaceholder='메세지를 입력하세요'
         />
         <button type='submit' disabled={!newMessage}>
           <BiSend />
@@ -213,12 +215,12 @@ const InputForm = styled.form`
   position: fixed;
   bottom: 0;
   z-index: 100;
-  width: 94%;
+  width: 100%;
+  max-width: ${({ theme }) => theme.pageWidth};
   padding-bottom: 20px;
   background-color: ${({ theme }) => theme.bgColor};
 
   input {
-    flex: 1;
     padding: 0 10px;
     border-radius: 10px;
   }

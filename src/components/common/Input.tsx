@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, Ref } from 'react';
 import styled, { css } from 'styled-components';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -10,26 +10,25 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 type InputBoxProps = Pick<InputProps, 'width' | 'height'>;
 
-function Input({
-  width,
-  height,
-  active,
-  customplaceholder,
-  ...props
-}: InputProps) {
+const Input = forwardRef(function Input(
+  { width, height, active, customplaceholder, ...props }: InputProps,
+  ref: React.ForwardedRef<HTMLInputElement>
+) {
   return (
     <Wrapper width={width} height={height}>
       <Placeholder active={active}>{customplaceholder}</Placeholder>
-      <input {...props} />
+      <input {...props} ref={ref} />
     </Wrapper>
   );
-}
+});
 
 const Wrapper = styled.div<InputBoxProps>`
   position: relative;
+  width: ${({ theme, width }) => width || theme.comWidth};
+  max-width: ${({ theme }) => theme.pageWidth};
 
   input {
-    width: ${({ theme, width }) => width || theme.comWidth};
+    width: 100%;
     height: ${({ theme, height }) => height || theme.comHeight};
     padding: 0 10px;
     outline-color: blue;
