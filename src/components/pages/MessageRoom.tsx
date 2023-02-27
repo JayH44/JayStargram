@@ -6,14 +6,15 @@ import {
 } from '@react-query-firebase/firestore';
 import { collection, doc, limit, orderBy, query } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { Link, useParams } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import ProfileBox from '../common/ProfileBox';
-import { BiSend } from 'react-icons/bi';
+import { BiSend, BiArrowBack } from 'react-icons/bi';
 import Input from '../common/Input';
 import { v4 as uuidv4 } from 'uuid';
 import { useQueryClient } from 'react-query';
+import { getTimeString } from '../Post/postfunction';
 
 function MessageRoom() {
   const { id: chatRoomId } = useParams();
@@ -45,19 +46,25 @@ function MessageRoom() {
     }
   );
   const { isLoading, data: receivedMsg } = messageQuery;
+  const sortMsg = receivedMsg?.docs
+    .map((msg) => msg.data())
+    .sort((a, b) => a.created?.seconds - b.created?.seconds);
 
   const mid = uuidv4();
   const mutationRef = doc(
     collection(dbFirebase, 'messages/' + chatRoomId + '/submessages'),
     mid
   );
-  const mutation = useFirestoreDocumentMutation(mutationRef);
-  console.log(mutationRef);
+  const mutation = useFirestoreDocumentMutation(mutationRef, {
+    merge: true,
+  });
 
+  console.log(sortMsg);
   useEffect(() => {
     if (inputRef?.current) {
       inputRef.current.focus();
     }
+    // mutation.mutate({});
   }, [inputRef]);
 
   useEffect(() => {
@@ -101,16 +108,14 @@ function MessageRoom() {
       );
     }
   };
-  const sortMsg = receivedMsg?.docs
-    .map((msg) => msg.data())
-    .sort((a, b) => a.created?.seconds - b.created?.seconds);
-
-  console.log(sortMsg);
 
   return (
     <Container>
       <MessageHeader>
-        채팅방이름: {chatRoomName}, 대화참여중인 유저:
+        <Link to='/message'>
+          <BiArrowBack />
+        </Link>
+        <div>채팅방이름: {chatRoomName}</div>, <div>대화참여중인 유저:</div>
       </MessageHeader>
       <MessageList>
         {sortMsg?.map((msg) => {
@@ -118,12 +123,19 @@ function MessageRoom() {
           return (
             <MessageItem key={msg.msgId} isOwner={isOwner}>
               {isOwner ? (
-                <>{msg.text}</>
+                <p>{msg.text}</p>
               ) : (
                 <>
-                  <ProfileBox userId={msg.userId} imgOnly /> {msg.text}
+                  <ProfileBox userId={msg.userId} imgOnly /> <p>{msg.text}</p>
                 </>
               )}
+              {
+                <>
+                  {msg.isReadArr.indexOf(currnetUser?.uid) === -1 &&
+                    isOwner && <div>1</div>}
+                  {getTimeString(msg.created.seconds)}
+                </>
+              }
             </MessageItem>
           );
         })}
@@ -150,9 +162,23 @@ const Container = styled.div`
   gap: 20px;
 `;
 const MessageHeader = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
   position: fixed;
+  left: 0;
+  width: 100%;
   height: 40px;
   background-color: ${({ theme }) => theme.bgColor};
+  padding: 5px;
+  border: 1px solid ${({ theme }) => theme.bdColor};
+
+  svg {
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+  }
 `;
 const MessageList = styled.ul`
   margin-top: 40px;
@@ -164,6 +190,20 @@ const MessageItem = styled.li<{ isOwner?: boolean }>`
   gap: 10px;
 
   margin-bottom: 10px;
+
+  p {
+    border-radius: 10px;
+    margin: 2px;
+    padding: 5px;
+    background-color: #f1e5e5;
+
+    ${({ isOwner }) =>
+      isOwner &&
+      css`
+        background-color: #df8004;
+        color: white;
+      `}
+  }
 `;
 
 const InputForm = styled.form`
