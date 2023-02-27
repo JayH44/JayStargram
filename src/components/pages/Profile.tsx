@@ -164,20 +164,20 @@ function Profile() {
             type='button'
             bgColor='blue'
             round
-            handleOnclick={deleteImage}></Button>
+            onClick={deleteImage}></Button>
         ) : (
           <Button
             text='프로필 사진 전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
-            handleOnclick={submitImage}></Button>
+            onClick={submitImage}></Button>
         )}
         <Button
           text='Logout'
           type='button'
           round
-          handleOnclick={handleLogout}></Button>
+          onClick={handleLogout}></Button>
       </LeftBox>
       <RightBox>
         <TextInfo>
@@ -190,7 +190,7 @@ function Profile() {
               active={text.length > 0}
               onChange={(e) => setText(e.target.value)}
             />
-            <Button text='이름수정' handleOnclick={handleName} />
+            <Button text='이름수정' onClick={handleName} />
           </ProfileModBox>
 
           <p>Email: {user?.email}</p>

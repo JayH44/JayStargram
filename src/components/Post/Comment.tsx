@@ -150,7 +150,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
           width='50px'
           text='작성'
           bgColor='rgba(0,0,0,0.6)'
-          handleOnclick={handleSubmit}
+          onClick={handleSubmit}
         />
       </WriteBox>
     </Container>

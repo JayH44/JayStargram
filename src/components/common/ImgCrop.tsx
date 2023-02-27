@@ -55,7 +55,7 @@ function ImgCrop({
         bgColor='red'
         width='200px'
         height='30px'
-        handleOnclick={handleCrop}
+        onClick={handleCrop}
       />
     </Background>
   );

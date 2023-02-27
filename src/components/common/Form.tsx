@@ -50,7 +50,7 @@ function Form({ title, InputData, inputs, setInputs, onSubmit }: FormProps) {
       <ButtonContainer>
         <Button text={title} type='submit' bgColor='blue' round />
         {title === 'SignUp' && (
-          <Button text='Cancel' round handleOnclick={() => navigate(-1)} />
+          <Button text='Cancel' round onClick={() => navigate(-1)} />
         )}
         {title === 'Login' && (
           <Link to='/signup'>

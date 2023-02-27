@@ -1,42 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
 
-type ButtonProps = {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
-  type: 'button' | 'submit' | 'reset' | undefined;
   bgColor?: string;
   color?: string;
   width?: string;
   height?: string;
   round?: boolean;
-  disabled?: boolean;
-  handleOnclick?: () => void;
-};
+}
 
 type ButtonConatinerProps = Omit<ButtonProps, 'text'>;
 
 function Button({
   text,
-  type,
   bgColor,
   color,
   width,
   height,
   round,
-  disabled,
-  handleOnclick,
+  ...props
 }: ButtonProps) {
   return (
     <Container
-      type={type}
+      {...props}
       bgColor={bgColor}
-      color={color}
       width={width}
       height={height}
-      round={round}
-      disabled={disabled}
-      onClick={handleOnclick}
-    >
+      round={round}>
       {text}
     </Container>
   );
@@ -44,7 +35,7 @@ function Button({
 
 const Container = styled.button<ButtonConatinerProps>`
   background-color: ${({ theme, bgColor }) => bgColor || theme.buttonColor};
-  color: ${({ theme, color }) => color || theme.textColor};
+  color: ${({ theme, color }) => color || 'white'};
   width: ${({ theme, width }) => width || theme.comWidth};
   height: ${({ theme, height }) => height || theme.comHeight};
   font-weight: 600;
