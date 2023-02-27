@@ -4,7 +4,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { dbFirebase } from '../../firebase';
 
-function ProfileBox({ userId }: { userId: string }) {
+type ProfileBoxProps = {
+  userId: string;
+  imgOnly: boolean;
+  nameOnly: boolean;
+};
+
+function ProfileBox({ userId, imgOnly, nameOnly }: ProfileBoxProps) {
   const userRef = doc(dbFirebase, 'users', userId ?? '');
   const userQuery = useFirestoreDocument(['user', userId], userRef, {
     subscribe: true,
@@ -18,19 +24,19 @@ function ProfileBox({ userId }: { userId: string }) {
   const userName = userQuery.data?.data()?.name;
 
   return (
-    <Container>
-      <img src={userPhoto} alt={userName} />
-      <div>{userName}</div>
+    <Container imgOnly={imgOnly}>
+      {!nameOnly && <img src={userPhoto} alt={userName} />}
+      {!imgOnly && <div>{userName}</div>}
     </Container>
   );
 }
 
-const Container = styled.div`
+const Container = styled.div<{ imgOnly: boolean }>`
   display: flex;
   align-items: center;
   gap: 20px;
   height: 30px;
-  min-width: 20%;
+  min-width: ${({ imgOnly }) => (imgOnly ? '0' : '20%')};
 
   img {
     height: 100%;
@@ -42,5 +48,10 @@ const Container = styled.div`
     font-weight: 600;
   }
 `;
+
+ProfileBox.defaultProps = {
+  imgOnly: false,
+  nameOnly: false,
+};
 
 export default ProfileBox;

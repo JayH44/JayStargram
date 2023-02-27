@@ -6,6 +6,7 @@ import Home from './components/pages/Home';
 import Login from './components/pages/Login';
 import Main from './components/pages/Main';
 import Message from './components/pages/Message';
+import MessageRoom from './components/pages/MessageRoom';
 import Post from './components/pages/Post';
 import PostDetail from './components/pages/PostDetail';
 import PostEdit from './components/pages/PostEdit';
@@ -29,6 +30,7 @@ function Router() {
           <Route path='author/:id' element={<Author />} />
           <Route path='profile' element={<Profile />} />
           <Route path='message' element={<Message />} />
+          <Route path='message/:id' element={<MessageRoom />} />
         </Route>
       </Routes>
     </BrowserRouter>

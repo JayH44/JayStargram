@@ -6,7 +6,6 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { deleteDoc } from 'firebase/firestore';
 import {
   deleteObject,
   getDownloadURL,
@@ -75,15 +74,10 @@ export const googleLogin = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
     if (credential) {
-      const token = credential.accessToken;
-      const user = result.user;
     }
     return result;
   } catch (error: any) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    const email = error.customData.email;
-    const credential = GoogleAuthProvider.credentialFromError(error);
+    GoogleAuthProvider.credentialFromError(error);
     console.log(error);
   }
 };

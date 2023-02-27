@@ -9,6 +9,7 @@ type InputProps = {
   width?: string;
   height?: string;
   value?: string;
+  inputRef?: React.RefObject<HTMLInputElement>;
   handleInputs?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -20,6 +21,7 @@ function Input({
   active,
   placeholder,
   handleInputs,
+  inputRef,
   value,
   width,
   height,
@@ -27,7 +29,13 @@ function Input({
   return (
     <Wrapper width={width} height={height}>
       <Placeholder active={active}>{placeholder}</Placeholder>
-      <input type={type} name={text} onChange={handleInputs} value={value} />
+      <input
+        type={type}
+        name={text}
+        onChange={handleInputs}
+        value={value}
+        ref={inputRef}
+      />
     </Wrapper>
   );
 }

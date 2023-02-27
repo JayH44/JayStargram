@@ -1,19 +1,10 @@
 import { useAuthUser } from '@react-query-firebase/auth';
 import { useFirestoreDocument } from '@react-query-firebase/firestore';
-import {
-  collection,
-  collectionGroup,
-  doc,
-  orderBy,
-  query,
-  where,
-} from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import React from 'react';
 import styled from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
 import PostDetail from './PostDetail';
-
-type HomeProps = {};
 
 function Home() {
   const { isLoading: authUserLoading, data: user } = useAuthUser('user', auth);

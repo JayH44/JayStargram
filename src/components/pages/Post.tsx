@@ -3,8 +3,6 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Serach from '../common/Serach';
 
-type PostProps = {};
-
 function Post() {
   return (
     <Container>
