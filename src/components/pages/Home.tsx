@@ -21,9 +21,17 @@ function Home() {
     return <div>User Loading...</div>;
   }
 
+  if (bookmarkPostIdArr) {
+    bookmarkPostIdArr.sort(
+      (a: any, b: any) => b.created?.seconds - a.created?.seconds
+    );
+  }
+
   return (
     <Container>
-      <h2>{name} 님이 즐겨찾기한 게시물</h2>
+      <h2>
+        <strong>{name}</strong> 님이 즐겨찾기한 게시물
+      </h2>
       {bookmarkPostIdArr?.length > 0 &&
         bookmarkPostIdArr.map(
           (bookmark: { postId: string; userId: string }) => (
@@ -42,6 +50,12 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   gap: 20px;
+
+  h2 {
+    strong {
+      font-weight: 600;
+    }
+  }
 `;
 
 Home.defaultProps = {};

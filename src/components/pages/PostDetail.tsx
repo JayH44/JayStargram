@@ -159,7 +159,11 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
       ? bookmarkPostIdArr.filter(
           (bid: { postId: string }) => bid.postId !== (postIdParam || id)
         )
-      : bookmarkPostIdArr.concat({ postId: postIdParam || id, userId });
+      : bookmarkPostIdArr.concat({
+          postId: postIdParam || id,
+          userId,
+          created: data?.created,
+        });
 
     userMutation.mutate(
       {

@@ -16,6 +16,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useQueryClient } from 'react-query';
 import { getTimeString } from '../Post/postfunction';
 import SerachResults from '../common/SerachResults';
+import Button from '../common/Button';
+import SerachResultsForChat from '../common/SerachResultsForChat';
 
 function MessageRoom() {
   const { id: chatRoomId } = useParams();
@@ -36,6 +38,9 @@ function MessageRoom() {
 
   const chatRef = doc(dbFirebase, 'messages/' + chatRoomId);
   const chatRoomQuery = useFirestoreDocument(['chatRoom', chatRoomId], chatRef);
+  const chatRoomMutation = useFirestoreDocumentMutation(chatRef, {
+    merge: true,
+  });
   const chatRoomName = chatRoomQuery?.data?.data()?.chatRoomName;
   const chatUsers = chatRoomQuery?.data?.data()?.chatUsers;
 
@@ -83,9 +88,6 @@ function MessageRoom() {
     return <div>메세지 불러오기중 ... </div>;
   }
 
-  if (sortMsg?.length === 0) {
-    return <div></div>;
-  }
   console.log(messageQuery);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,6 +125,20 @@ function MessageRoom() {
     setShowUsers(!showUsers);
   };
 
+  const addChatUser = (userId: string) => {
+    console.log(userId);
+    chatRoomMutation.mutate(
+      {
+        chatUsers: chatUsers.push(userId),
+      },
+      {
+        onSuccess() {
+          alert('초대가 되었습니다.');
+        },
+      }
+    );
+  };
+
   return (
     <Container>
       <MessageHeader>
@@ -131,7 +147,7 @@ function MessageRoom() {
         </Link>
         <ChatRoomNameBox onClick={handleChatUsers}>
           <p>{chatRoomName},</p>
-          {showUsers && <SerachResults />}
+          {showUsers && <SerachResultsForChat onClick={addChatUser} />}
         </ChatRoomNameBox>
         <ChatUserNameBox>
           참여중인 유저:
@@ -140,29 +156,37 @@ function MessageRoom() {
           ))}
         </ChatUserNameBox>
       </MessageHeader>
-      <MessageList>
-        {sortMsg?.map((msg) => {
-          const isOwner = msg.userId === currnetUser?.uid;
-          return (
-            <MessageItem key={msg.msgId} isOwner={isOwner}>
-              {isOwner ? (
-                <p>{msg.text}</p>
-              ) : (
-                <>
-                  <ProfileBox userId={msg.userId} imgOnly /> <p>{msg.text}</p>
-                </>
-              )}
-              {
-                <>
-                  {msg.isReadArr.indexOf(currnetUser?.uid) === -1 &&
-                    isOwner && <div>1</div>}
-                  {getTimeString(msg.created.seconds)}
-                </>
-              }
-            </MessageItem>
-          );
-        })}
-      </MessageList>
+      {chatUsers && chatUsers.length === 1 && (
+        <NoUserBox>
+          <p>대화상대를 추가해주세요</p>
+          <Button text='대화상대 찾기' onClick={handleChatUsers}></Button>
+        </NoUserBox>
+      )}
+      {sortMsg?.length !== 0 && (
+        <MessageList>
+          {sortMsg?.map((msg) => {
+            const isOwner = msg.userId === currnetUser?.uid;
+            return (
+              <MessageItem key={msg.msgId} isOwner={isOwner}>
+                {isOwner ? (
+                  <p>{msg.text}</p>
+                ) : (
+                  <>
+                    <ProfileBox userId={msg.userId} imgOnly /> <p>{msg.text}</p>
+                  </>
+                )}
+                {
+                  <>
+                    {msg.isReadArr.indexOf(currnetUser?.uid) === -1 &&
+                      isOwner && <div>1</div>}
+                    {getTimeString(msg.created.seconds)}
+                  </>
+                }
+              </MessageItem>
+            );
+          })}
+        </MessageList>
+      )}
       <InputForm onSubmit={handleOnSubmit}>
         <Input
           ref={inputRef}
@@ -216,6 +240,9 @@ const ChatUserNameBox = styled.div`
   display: flex;
   align-items: center;
   gap: 2px;
+`;
+const NoUserBox = styled.div`
+  margin-top: 40px;
 `;
 const MessageList = styled.ul`
   margin-top: 40px;

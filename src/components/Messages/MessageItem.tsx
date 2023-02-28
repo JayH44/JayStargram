@@ -1,12 +1,21 @@
 import {
   useFirestoreDocument,
+  useFirestoreDocumentMutation,
   useFirestoreQuery,
 } from '@react-query-firebase/firestore';
-import { collection, doc, limit, orderBy, query } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  limit,
+  orderBy,
+  query,
+  Timestamp,
+} from 'firebase/firestore';
 import React from 'react';
 import styled from 'styled-components';
 import { dbFirebase } from '../../firebase';
 import ProfileBox from '../common/ProfileBox';
+import { BsInfoCircle } from 'react-icons/bs';
 
 type MessageItemProps = {
   chatRoomId: string;
@@ -19,6 +28,10 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
     ['chatRoom', chatRoomId],
     chatRoomRef
   );
+  const chatRoomMutation = useFirestoreDocumentMutation(chatRoomRef, {
+    merge: true,
+  });
+
   const chatRoomName = chatRoomQuery?.data?.data()?.chatRoomName;
   const chatUsers = chatRoomQuery?.data
     ?.data()
@@ -45,13 +58,29 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
     return <div>채팅방 목록을 불러오는 중입니다...</div>;
   }
 
-  const recentText = messageQuery.data?.docs[0].data().text;
+  if (!messageQuery.data?.empty) {
+    chatRoomMutation.mutate(
+      {
+        lastMsgTime: messageQuery.data?.docs[0].data().created,
+      },
+      {
+        onSuccess() {
+          console.log(messageQuery.data?.docs[0].data().created);
+        },
+      }
+    );
+  }
 
   return (
     <Container>
-      <ProfileBox userId={chatUsers[0]} imgOnly />
+      {chatUsers.length > 0 ? (
+        <ProfileBox userId={chatUsers[0]} imgOnly />
+      ) : (
+        <BsInfoCircle />
+      )}
       <p>
-        {chatRoomName}: {recentText}
+        {chatRoomName}:{' '}
+        {!messageQuery.data?.empty && messageQuery.data?.docs[0].data().text}
       </p>
     </Container>
   );
@@ -63,6 +92,11 @@ const Container = styled.li`
   border: 1px solid ${({ theme }) => theme.bdColor};
   border-radius: 10px;
   padding: 10px;
+
+  svg {
+    width: 25px;
+    height: 25px;
+  }
 `;
 
 MessageItem.defaultProps = {};
