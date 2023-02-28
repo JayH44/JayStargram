@@ -8,7 +8,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { dbFirebase } from '../../firebase';
 import ProfileBox from '../common/ProfileBox';
-import { BsInfoCircle } from 'react-icons/bs';
+import { BsInfoCircle, BsPersonFill } from 'react-icons/bs';
 
 type MessageItemProps = {
   chatRoomId: string;
@@ -23,6 +23,7 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
   );
   const chatRoom = chatRoomQuery?.data?.data();
   const { chatRoomName, chatUsers } = chatRoom ?? {};
+
   const chatRoomMutation = useFirestoreDocumentMutation(chatRoomRef, {
     merge: true,
   });
@@ -44,36 +45,49 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
     }
   );
 
+  let newChatUsers;
+  if (chatUsers?.length > 1) {
+    newChatUsers = chatUsers.filter((uid: string) => uid !== userId);
+    // newChatUsers = chatUsers;
+    // newChatUsers.push('AaIAFpTPXDXfaaUKtYXNY7pPLU23');
+    // newChatUsers.push('WERtgDdberX9ynZp8uDBnKlrgOW2');
+  } else {
+    newChatUsers = [];
+  }
+
   if (chatRoomQuery.isLoading || messageQuery.isLoading) {
     return <div>채팅방 목록을 불러오는 중입니다...</div>;
   }
 
-  console.log(messageQuery.data);
-
-  // if (!messageQuery.data?.empty) {
-  //   chatRoomMutation.mutate(
-  //     {
-  //       lastMsgTime: messageQuery.data?.docs[0].data().created,
-  //     },
-  //     {
-  //       onSuccess() {
-  //         console.log(messageQuery.data?.docs[0].data().created);
-  //       },
-  //     }
-  //   );
-  // }
-
   return (
     <Container>
-      {chatUsers.length > 0 ? (
-        <ProfileBox userId={chatUsers[0]} imgOnly />
-      ) : (
-        <BsInfoCircle />
-      )}
-      <p>
-        {chatRoomName}:{' '}
-        {!messageQuery.data?.empty && messageQuery.data?.docs[0].data().text}
-      </p>
+      <ProfileBoxContainer>
+        {newChatUsers?.length > 0 ? (
+          newChatUsers.map((uid: string) => (
+            <ProfileBox
+              key={uid}
+              userId={uid}
+              imgOnly
+              userNum={newChatUsers?.length}
+            />
+          ))
+        ) : (
+          <BsInfoCircle />
+        )}
+      </ProfileBoxContainer>
+      <ChatRoomBoxContainer>
+        <ChatRoomInfo>
+          {newChatUsers?.length > 0 &&
+            newChatUsers.map((uid: string) => (
+              <ProfileBox key={uid} userId={uid} nameOnly />
+            ))}
+          <BsPersonFill />
+          <p>{newChatUsers?.length}</p>
+        </ChatRoomInfo>
+        <RecentMsgContainer>
+          {!messageQuery.data?.empty && messageQuery.data?.docs[0].data().text}
+        </RecentMsgContainer>
+      </ChatRoomBoxContainer>
     </Container>
   );
 }
@@ -84,11 +98,64 @@ const Container = styled.li`
   border: 1px solid ${({ theme }) => theme.bdColor};
   border-radius: 10px;
   padding: 10px;
+`;
+
+const ProfileBoxContainer = styled.div`
+  min-width: 40px;
+  min-height: 40px;
+  position: relative;
+
+  div {
+    position: absolute;
+  }
+
+  div:nth-child(1) {
+    top: 0;
+    left: 0;
+  }
+
+  div:nth-child(2) {
+    bottom: -5px;
+    right: -5px;
+  }
+
+  div:nth-child(3) {
+    bottom: -5px;
+    left: 0;
+  }
+
+  div:nth-child(4) {
+    top: 0;
+    right: -7px;
+  }
 
   svg {
+    position: absolute;
+    top: 5px;
+    left: 5px;
     width: 25px;
     height: 25px;
   }
+`;
+const ChatRoomBoxContainer = styled.div`
+  width: 90%;
+`;
+
+const ChatRoomInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+`;
+const RecentMsgContainer = styled.div`
+  width: 100%;
+  overflow: hidden;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 MessageItem.defaultProps = {};
