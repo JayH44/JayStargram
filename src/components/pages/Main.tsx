@@ -12,6 +12,8 @@ function Main() {
     return <LoadingContainer>Loading...</LoadingContainer>;
   }
 
+  console.log(user);
+
   if (!user.data) {
     alert('유저정보가 없어서 로그인창으로 이동합니다');
   }

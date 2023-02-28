@@ -15,7 +15,6 @@ import Input from '../common/Input';
 import { v4 as uuidv4 } from 'uuid';
 import { useQueryClient } from 'react-query';
 import { getTimeString } from '../Post/postfunction';
-import SerachResults from '../common/SerachResults';
 import Button from '../common/Button';
 import SerachResultsForChat from '../common/SerachResultsForChat';
 

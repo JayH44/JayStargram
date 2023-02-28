@@ -1,3 +1,4 @@
+import { useAuthUser } from '@react-query-firebase/auth';
 import { useFirestoreDocumentMutation } from '@react-query-firebase/firestore';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
@@ -10,7 +11,7 @@ import Button from '../common/Button';
 import ImgCrop from '../common/ImgCrop';
 
 function PostEdit() {
-  const user = auth.currentUser;
+  const { data: user } = useAuthUser(['authUser'], auth);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
@@ -37,6 +38,10 @@ function PostEdit() {
     setIdx(idx);
   };
 
+  const onDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    e.dataTransfer.setData('text', index.toString());
+  };
+
   const onDrop = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.preventDefault();
     const draggedIndex = parseInt(e.dataTransfer.getData('text'));
@@ -44,10 +49,6 @@ function PostEdit() {
     const newImages = croppedFiles.filter((_, i) => i !== draggedIndex);
     newImages.splice(index, 0, draggedImage);
     setCroppedFiles(newImages);
-  };
-
-  const onDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    e.dataTransfer.setData('text', index.toString());
   };
 
   const removeImage = (idx: number) => {
@@ -68,10 +69,6 @@ function PostEdit() {
       return;
     }
     if (!user) return;
-
-    // const photoURL = croppedFiles.forEach(
-    //   async (file) => await uploadFirebase(file, 'posts/' + user?.uid)
-    // );
 
     let photoURL: string[] = [];
     for (let i = 0; i < croppedFiles.length; i++) {

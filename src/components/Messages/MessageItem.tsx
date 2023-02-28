@@ -3,14 +3,7 @@ import {
   useFirestoreDocumentMutation,
   useFirestoreQuery,
 } from '@react-query-firebase/firestore';
-import {
-  collection,
-  doc,
-  limit,
-  orderBy,
-  query,
-  Timestamp,
-} from 'firebase/firestore';
+import { collection, doc, limit, orderBy, query } from 'firebase/firestore';
 import React from 'react';
 import styled from 'styled-components';
 import { dbFirebase } from '../../firebase';

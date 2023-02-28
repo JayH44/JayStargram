@@ -15,7 +15,7 @@ import PostItem from '../Post/PostItem';
 function PostList() {
   const bottom = useRef(null);
   const totalNum = useRef(0);
-  const reqQueryNum = 8;
+  const reqQueryNum = 6;
 
   const postColl = collectionGroup(dbFirebase, 'subposts');
   useEffect(() => {
@@ -24,11 +24,19 @@ function PostList() {
     });
   }, [postColl]);
 
-  const ref = query(postColl, orderBy('created', 'desc'), limit(reqQueryNum));
-  const postQuery = useFirestoreInfiniteQuery('posts', ref, (snapshot) => {
-    const lastDocument = snapshot.docs[snapshot.docs.length - 1];
-    return query(ref, startAfter(lastDocument));
-  });
+  const postRef = query(
+    postColl,
+    orderBy('created', 'desc'),
+    limit(reqQueryNum)
+  );
+  const postQuery = useFirestoreInfiniteQuery(
+    'posts/inf',
+    postRef,
+    (snapshot) => {
+      const lastDocument = snapshot.docs[snapshot.docs.length - 1];
+      return query(postRef, startAfter(lastDocument));
+    }
+  );
 
   const { data: snapshot } = postQuery;
   const totalPageNum = snapshot?.pages.length;

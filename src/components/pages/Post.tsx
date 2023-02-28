@@ -16,7 +16,8 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  /* padding: 10px; */
+  padding-top: 10px;
   gap: 10px;
 `;
 

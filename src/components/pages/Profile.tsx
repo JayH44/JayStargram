@@ -13,8 +13,7 @@ import Input from '../common/Input';
 import { useNavigate } from 'react-router-dom';
 
 function Profile() {
-  const { data } = useAuthUser(['authUser'], auth);
-  const user = data;
+  const { data: user } = useAuthUser(['authUser'], auth);
   const [photoURL, setPhotoURL] = useState<string | undefined>(
     user?.photoURL || undefined
   );
@@ -141,7 +140,8 @@ function Profile() {
         <ImageContainer
           htmlFor='profileInput'
           active={active}
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <input
             type='file'
             accept='image/*'
@@ -164,20 +164,23 @@ function Profile() {
             type='button'
             bgColor='blue'
             round
-            onClick={deleteImage}></Button>
+            onClick={deleteImage}
+          ></Button>
         ) : (
           <Button
             text='프로필 사진 전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
-            onClick={submitImage}></Button>
+            onClick={submitImage}
+          ></Button>
         )}
         <Button
           text='Logout'
           type='button'
           round
-          onClick={handleLogout}></Button>
+          onClick={handleLogout}
+        ></Button>
       </LeftBox>
       <RightBox>
         <TextInfo>

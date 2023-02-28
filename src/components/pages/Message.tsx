@@ -3,7 +3,7 @@ import {
   useFirestoreDocument,
   useFirestoreDocumentMutation,
 } from '@react-query-firebase/firestore';
-import { doc, Timestamp } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
