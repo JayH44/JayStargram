@@ -14,6 +14,8 @@ import { dbFirebase } from '../../firebase';
 import PostDetail from './PostDetail';
 
 function Author() {
+  console.log('at');
+
   const { id: userId } = useParams();
   const totalNum = useRef(0);
   const bottom = useRef(null);
@@ -34,7 +36,7 @@ function Author() {
   );
 
   const authorQuery = useFirestoreInfiniteQuery(
-    ['authors', userId],
+    ['authorPosts/inf', userId],
     authorRef,
     (snapshot) => {
       const lastDocument = snapshot.docs[snapshot.docs.length - 1];

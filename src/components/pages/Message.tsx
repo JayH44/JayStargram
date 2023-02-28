@@ -14,15 +14,20 @@ import { v4 as uuidv4 } from 'uuid';
 import Input from '../common/Input';
 
 function Message() {
+  console.log('ms');
+
   const { isLoading: userLoading, data: user } = useAuthUser('authUser', auth);
   const navigate = useNavigate();
   const [text, setText] = useState('');
 
   const currentUserRef = doc(dbFirebase, 'users', user?.uid ?? '');
   const currentUserQuery = useFirestoreDocument(
-    ['users', user?.uid],
+    ['currentUser', user?.uid],
     currentUserRef
   );
+  const currentUser = currentUserQuery.data?.data();
+  const { chatRoomId, name, id: currentUserId } = currentUser ?? {};
+
   const currentUserMutation = useFirestoreDocumentMutation(currentUserRef, {
     merge: true,
   });
@@ -32,10 +37,6 @@ function Message() {
   const newChatRoomMutation = useFirestoreDocumentMutation(newChatRoomRef, {
     merge: true,
   });
-
-  const chatRoomId = currentUserQuery.data?.data()?.chatRoomId;
-  const name = currentUserQuery.data?.data()?.name;
-  const currentUserId = currentUserQuery.data?.data()?.id;
 
   if (userLoading || currentUserQuery.isLoading) {
     return <div>User Loading...</div>;

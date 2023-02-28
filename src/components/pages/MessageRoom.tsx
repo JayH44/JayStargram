@@ -19,6 +19,8 @@ import Button from '../common/Button';
 import SerachResultsForChat from '../common/SerachResultsForChat';
 
 function MessageRoom() {
+  console.log('msr');
+
   const { id: chatRoomId } = useParams();
   const [newMessage, setNewMessage] = useState('');
   const inputRef: React.ForwardedRef<HTMLInputElement> = useRef(null);

@@ -35,6 +35,8 @@ type PostDetailProps = {
 };
 
 function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
+  console.log('pd');
+
   const { id } = useParams();
   const { search } = useLocation();
   const userId = userIdParam || new URLSearchParams(search).get('userId');

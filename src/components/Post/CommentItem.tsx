@@ -49,8 +49,7 @@ function CommentItem({
             <CommentButtonBox
               onClick={() =>
                 handleCommentRep(`@${userName} `, comment.commentId)
-              }
-            >
+              }>
               댓글달기
             </CommentButtonBox>
           )}

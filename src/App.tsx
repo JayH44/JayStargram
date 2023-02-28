@@ -7,7 +7,7 @@ import { darkTheme, lightTheme } from './theme';
 
 function App() {
   const [isDark, setIsDark] = useState(false);
-  const user = useAuthUser(['user'], auth);
+  const user = useAuthUser(['authUser'], auth);
 
   if (user.isLoading) {
     return <div />;

@@ -21,14 +21,11 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
     ['chatRoom', chatRoomId],
     chatRoomRef
   );
+  const chatRoom = chatRoomQuery?.data?.data();
+  const { chatRoomName, chatUsers } = chatRoom ?? {};
   const chatRoomMutation = useFirestoreDocumentMutation(chatRoomRef, {
     merge: true,
   });
-
-  const chatRoomName = chatRoomQuery?.data?.data()?.chatRoomName;
-  const chatUsers = chatRoomQuery?.data
-    ?.data()
-    ?.chatUsers.filter((user: string) => user !== userId);
 
   const messageColl = collection(
     dbFirebase,
@@ -51,18 +48,20 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
     return <div>채팅방 목록을 불러오는 중입니다...</div>;
   }
 
-  if (!messageQuery.data?.empty) {
-    chatRoomMutation.mutate(
-      {
-        lastMsgTime: messageQuery.data?.docs[0].data().created,
-      },
-      {
-        onSuccess() {
-          console.log(messageQuery.data?.docs[0].data().created);
-        },
-      }
-    );
-  }
+  console.log(messageQuery.data);
+
+  // if (!messageQuery.data?.empty) {
+  //   chatRoomMutation.mutate(
+  //     {
+  //       lastMsgTime: messageQuery.data?.docs[0].data().created,
+  //     },
+  //     {
+  //       onSuccess() {
+  //         console.log(messageQuery.data?.docs[0].data().created);
+  //       },
+  //     }
+  //   );
+  // }
 
   return (
     <Container>

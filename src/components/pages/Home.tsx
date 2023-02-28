@@ -7,10 +7,15 @@ import { auth, dbFirebase } from '../../firebase';
 import PostDetail from './PostDetail';
 
 function Home() {
-  const { isLoading: authUserLoading, data: user } = useAuthUser('user', auth);
+  console.log('hm');
+
+  const { isLoading: authUserLoading, data: user } = useAuthUser(
+    ['authUser'],
+    auth
+  );
   const currentUserRef = doc(dbFirebase, 'users', user?.uid ?? '');
   const currentUserQuery = useFirestoreDocument(
-    ['users', user?.uid],
+    ['currentUser', user?.uid],
     currentUserRef
   );
 

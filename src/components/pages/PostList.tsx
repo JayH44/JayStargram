@@ -13,6 +13,8 @@ import { dbFirebase } from '../../firebase';
 import PostItem from '../Post/PostItem';
 
 function PostList() {
+  console.log('pl');
+
   const bottom = useRef(null);
   const totalNum = useRef(0);
   const reqQueryNum = 6;

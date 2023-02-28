@@ -11,6 +11,8 @@ import Button from '../common/Button';
 import ImgCrop from '../common/ImgCrop';
 
 function PostEdit() {
+  console.log('pe');
+
   const { data: user } = useAuthUser(['authUser'], auth);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
@@ -131,8 +133,7 @@ function PostEdit() {
         <PreviewWrapper
           active={active}
           idx={idx}
-          isPicture={croppedFiles.length > 0}
-        >
+          isPicture={croppedFiles.length > 0}>
           {croppedFiles.length > 0 ? (
             croppedFiles.map((file, idx) => (
               <img key={idx} src={URL.createObjectURL(file)} alt={`[${idx}]`} />
