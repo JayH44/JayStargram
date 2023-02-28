@@ -46,7 +46,7 @@ function SignUp() {
       });
     },
     onError(error) {
-      alert('Could not sign you up!');
+      alert('회원가입중 문제가 발생했습니다.');
     },
   });
 

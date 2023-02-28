@@ -36,7 +36,7 @@ function Login() {
 
   const mutation = useAuthSignInWithEmailAndPassword(auth, {
     onSuccess({ user }) {
-      alert('환영합니다' + user.displayName + '님');
+      alert('환영합니다 ' + user.displayName + '님');
       navigate('/profile');
     },
     onError(error) {
