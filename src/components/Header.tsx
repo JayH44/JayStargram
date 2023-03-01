@@ -65,7 +65,6 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  min-width: ${({ theme }) => theme.pageSmallWidth};
   max-width: ${({ theme }) => theme.pageWidth};
 
   display: flex;

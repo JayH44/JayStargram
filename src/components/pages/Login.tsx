@@ -69,7 +69,7 @@ function Login() {
   const handleGoogle = () => {
     googleLogin().then((res) => {
       alert('환영합니다.');
-      navigate('/home');
+      navigate('/profile');
     });
   };
   return (
