@@ -82,7 +82,7 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
               <ProfileBox key={uid} userId={uid} nameOnly />
             ))}
           <BsPersonFill />
-          <p>{newChatUsers?.length}</p>
+          <p>{chatUsers?.length}</p>
         </ChatRoomInfo>
         <RecentMsgContainer>
           {!messageQuery.data?.empty && messageQuery.data?.docs[0].data().text}

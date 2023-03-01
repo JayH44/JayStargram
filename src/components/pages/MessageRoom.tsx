@@ -13,10 +13,10 @@ import ProfileBox from '../common/ProfileBox';
 import { BiSend, BiArrowBack } from 'react-icons/bi';
 import Input from '../common/Input';
 import { v4 as uuidv4 } from 'uuid';
-import { useQueryClient } from 'react-query';
 import { getTimeString } from '../Post/postfunction';
 import Button from '../common/Button';
 import SerachResultsForChat from '../common/SerachResultsForChat';
+import { BsPersonFill } from 'react-icons/bs';
 
 function MessageRoom() {
   console.log('msr');
@@ -30,25 +30,22 @@ function MessageRoom() {
     ['authUser'],
     auth
   );
-  const queryClient = useQueryClient();
-
-  const messageColl = collection(
-    dbFirebase,
-    'messages/' + chatRoomId + '/submessages'
-  );
 
   const chatRef = doc(dbFirebase, 'messages/' + chatRoomId);
   const chatRoomQuery = useFirestoreDocument(['chatRoom', chatRoomId], chatRef);
   const chatRoomMutation = useFirestoreDocumentMutation(chatRef, {
     merge: true,
   });
-  const chatRoomName = chatRoomQuery?.data?.data()?.chatRoomName;
-  const chatUsers = chatRoomQuery?.data?.data()?.chatUsers;
+  const { chatRoomName, chatUsers } = chatRoomQuery?.data?.data() ?? {};
 
+  const messageColl = collection(
+    dbFirebase,
+    'messages/' + chatRoomId + '/submessages'
+  );
   const messageQueryRef = query(
     messageColl,
     orderBy('created', 'desc'),
-    limit(1000)
+    limit(100)
   );
   const messageQuery = useFirestoreQuery(
     ['messages', chatRoomId],
@@ -76,7 +73,6 @@ function MessageRoom() {
     if (inputRef?.current) {
       inputRef.current.focus();
     }
-    // mutation.mutate({});
   }, [inputRef]);
 
   useEffect(() => {
@@ -111,9 +107,6 @@ function MessageRoom() {
         {
           onSuccess() {
             setNewMessage('');
-            queryClient.invalidateQueries({
-              queryKey: ['chatRoom', chatRoomId],
-            });
             bottomListRef.current &&
               bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
           },
@@ -134,7 +127,7 @@ function MessageRoom() {
       },
       {
         onSuccess() {
-          alert('초대가 되었습니다.');
+          alert(userId + '님이 초대가 되었습니다.');
         },
       }
     );
@@ -147,14 +140,15 @@ function MessageRoom() {
           <BiArrowBack />
         </Link>
         <ChatRoomNameBox onClick={handleChatUsers}>
-          <p>{chatRoomName},</p>
+          <p>{chatRoomName}:</p>
           {showUsers && <SerachResultsForChat onClick={addChatUser} />}
         </ChatRoomNameBox>
         <ChatUserNameBox>
-          참여중인 유저:
           {chatUsers.map((user: string) => (
             <ProfileBox key={user} userId={user} nameOnly />
           ))}
+          <BsPersonFill />
+          {chatUsers.length}
         </ChatUserNameBox>
       </MessageHeader>
       {chatUsers && chatUsers.length === 1 && (
@@ -240,7 +234,11 @@ const ChatRoomNameBox = styled.div`
 const ChatUserNameBox = styled.div`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 5px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 `;
 const NoUserBox = styled.div`
   margin-top: 40px;

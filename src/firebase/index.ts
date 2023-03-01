@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, setLogLevel } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -33,6 +33,7 @@ googleProvider.setCustomParameters({
 
 //dB관련
 export const dbFirebase = getFirestore(app);
+setLogLevel('error');
 
 //스토리지관련
 export const storageFirebase = getStorage(app);
