@@ -84,6 +84,7 @@ function Profile() {
           name: user.displayName,
           photo: user.photoURL,
           bookmarkPostIdArr: [],
+          chatRoomId: [],
         },
         {
           onSuccess() {
@@ -107,6 +108,7 @@ function Profile() {
         name: text,
         photo: user.photoURL,
         bookmarkPostIdArr: [],
+        chatRoomId: [],
       },
       {
         onSuccess() {
@@ -161,14 +163,14 @@ function Profile() {
         </ImageContainer>
         {croppedFiles.length === 0 && !deleteAction ? (
           <Button
-            text='프로필 사진 삭제'
+            text='프로필사진 삭제'
             type='button'
             bgColor='blue'
             round
             onClick={deleteImage}></Button>
         ) : (
           <Button
-            text='전송'
+            text='프로필사진 전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
@@ -195,7 +197,7 @@ function Profile() {
               active={text.length > 0}
               onChange={(e) => setText(e.target.value)}
             />
-            <Button text='이름수정' onClick={handleName} />
+            <Button text='이름수정' onClick={handleName} round />
           </ProfileModBox>
           <p>
             <b>E-mail</b> <br />
@@ -271,7 +273,7 @@ const TextInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
 
   text-align: center;
   p {
@@ -292,6 +294,9 @@ const ProfileModBox = styled.div`
   }
   button {
     width: 70%;
+  }
+  input {
+    border-radius: 5px;
   }
 `;
 Profile.defaultProps = {};

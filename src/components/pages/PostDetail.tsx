@@ -111,12 +111,12 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     }
   }, [user?.uid, userId]);
 
-  if (!currentUserQuery.isLoading && !bookmarkPostIdArr) {
-    console.log('?');
-    currentUserMutation.mutate({
-      bookmarkPostIdArr: [],
-    });
-  }
+  useEffect(() => {
+    if (!currentUserQuery.isLoading && !bookmarkPostIdArr) {
+      alert('프로필 등록을 해주세요');
+      navigate('/profile');
+    }
+  }, [currentUserQuery.isLoading, bookmarkPostIdArr, navigate]);
 
   useEffect(() => {
     if (data?.likeUserArr.indexOf(user?.uid) === -1) {

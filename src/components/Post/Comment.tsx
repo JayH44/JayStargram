@@ -21,16 +21,23 @@ type CommentProps = {
 function Comment({ id, dropdown, setDropdown }: CommentProps) {
   const { isLoading, data: user } = useAuthUser(['authUser'], auth);
   const [text, setText] = useState('');
+  const [count, setCount] = useState(0);
   const [repId, setRepId] = useState<string | null>(null);
-
   const commentRef = doc(collection(dbFirebase, 'comments'), id);
-  const commentsQuery = useFirestoreDocument(['comments', id], commentRef, {
-    subscribe: true,
-  });
+  const commentsQuery = useFirestoreDocument(
+    ['comments', id, count],
+    commentRef
+  );
   const commentMutation = useFirestoreDocumentMutation(commentRef, {
     merge: true,
   });
   const { commentArr, commentRep } = commentsQuery.data?.data() ?? {};
+
+  useEffect(() => {
+    if (commentArr && commentRep) {
+      setCount(commentArr.length + commentRep.length);
+    }
+  }, [commentArr, commentRep]);
 
   useEffect(() => {
     if (text === '') {
@@ -45,16 +52,10 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   }
 
   if (!commentArr) {
-    commentMutation.mutate({
-      commentArr: [],
-    });
     return <div>Comment Initializing...</div>;
   }
 
   if (!commentRep) {
-    commentMutation.mutate({
-      commentRep: [],
-    });
     return <div>CommentRep Initializing...</div>;
   }
 
@@ -80,6 +81,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         {
           onSuccess() {
             setText('');
+            setCount(count + 1);
           },
         }
       );
@@ -100,6 +102,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         {
           onSuccess() {
             setText('');
+            setCount(count + 1);
           },
         }
       );

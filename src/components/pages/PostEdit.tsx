@@ -97,6 +97,7 @@ function PostEdit() {
           alert('글이 성공적으로 저장되었습니다.');
           await setDoc(commentRef, {
             commentArr: [],
+            commentRep: [],
           });
           navigate('/post/' + ref.id + `?userId=${user?.uid}`);
         },

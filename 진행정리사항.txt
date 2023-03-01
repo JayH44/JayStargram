@@ -156,3 +156,9 @@ Custom 으로 firebase 에서 지원하는 count 이용하여 로직구현
 invalidateQueries 를 사용해서 refetch 를 하는것을
 devtool 을 통해 확인했음에도 예전데이터를 가져옴
 https://github.com/invertase/react-query-firebase/issues/51
+
+
+firebase subscribe true 시 query 무한 loading 상태
+https://github.com/invertase/react-query-firebase/issues/23
+
+https://github.com/invertase/react-query-firebase/issues/25
