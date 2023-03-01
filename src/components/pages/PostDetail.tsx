@@ -38,32 +38,32 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   console.log('pd');
 
   const { id } = useParams();
+  const postId = postIdParam || id;
   const { search } = useLocation();
   const userId = userIdParam || new URLSearchParams(search).get('userId');
   const { data: user } = useAuthUser(['authUser'], auth);
-  const [isOwner, setIsowner] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isClicked, setIsCliked] = useState(false);
   const [dropdown, setDropdown] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const navigate = useNavigate();
-  const ref = query(
+
+  const postRef = query(
     collectionGroup(dbFirebase, 'subposts'),
-    where('postId', '==', postIdParam || id)
+    where('postId', '==', postId)
   );
   const postQuery = useFirestoreQuery(
-    ['post', { id: postIdParam || id, isLiked }],
-    ref,
-    {
-      subscribe: true,
-    }
+    ['post', { id: postId, isLiked }],
+    postRef,
+    { subscribe: true }
   );
+  const data = postQuery.data?.docs[0].data();
 
   const userRef = doc(dbFirebase, 'users', userId ?? '');
   const userQuery = useFirestoreDocument(['user', userId], userRef);
-  const userPhoto = userQuery.data?.data()?.photo;
-  const userName = userQuery.data?.data()?.name;
+  const { photo: userPhoto, name: userName } = userQuery.data?.data() ?? {};
 
   const currentUserRef = doc(collection(dbFirebase, 'users'), user?.uid);
   const currentUserQuery = useFirestoreDocument(
@@ -74,13 +74,13 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     }
   );
   const bookmarkPostIdArr = currentUserQuery.data?.data()?.bookmarkPostIdArr;
-  const userMutation = useFirestoreDocumentMutation(currentUserRef, {
+  const currentUserMutation = useFirestoreDocumentMutation(currentUserRef, {
     merge: true,
   });
 
   const docref = doc(
     collection(dbFirebase, `posts/${userId}/subposts`),
-    postIdParam || id
+    postId
   );
   const deleteMutation = useFirestoreDocumentDeletion(docref, {
     onSuccess() {
@@ -101,25 +101,22 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
       likes: newlikeUserArr.length,
       likeUserArr: newlikeUserArr,
     });
-    // return newLikes;
   });
+
   useEffect(() => {
     if (user?.uid === userId) {
-      setIsowner(true);
+      setIsOwner(true);
     } else {
-      setIsowner(false);
+      setIsOwner(false);
     }
   }, [user?.uid, userId]);
 
   if (!currentUserQuery.isLoading && !bookmarkPostIdArr) {
     console.log('?');
-    userMutation.mutate({
+    currentUserMutation.mutate({
       bookmarkPostIdArr: [],
     });
   }
-
-  const snapshot = postQuery.data;
-  const data = snapshot?.docs[0].data();
 
   useEffect(() => {
     if (data?.likeUserArr.indexOf(user?.uid) === -1) {
@@ -132,8 +129,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   useEffect(() => {
     if (bookmarkPostIdArr) {
       const isBooked = bookmarkPostIdArr.filter(
-        (bookmark: { postId: string }) =>
-          bookmark.postId === (postIdParam || id)
+        (bookmark: { postId: string }) => bookmark.postId === postId
       );
       if (isBooked?.length === 0) {
         setIsBookmarked(false);
@@ -141,7 +137,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
         setIsBookmarked(true);
       }
     }
-  }, [bookmarkPostIdArr, postIdParam, id]);
+  }, [bookmarkPostIdArr, postId]);
 
   const handleDelete = () => {
     if (user?.uid === userId && window.confirm('삭제하시겠습니까?')) {
@@ -159,15 +155,15 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   const handleBookmark = () => {
     const newPostIds = isBookmarked
       ? bookmarkPostIdArr.filter(
-          (bid: { postId: string }) => bid.postId !== (postIdParam || id)
+          (bid: { postId: string }) => bid.postId !== postId
         )
       : bookmarkPostIdArr.concat({
-          postId: postIdParam || id,
+          postId,
           userId,
           created: data?.created,
         });
 
-    userMutation.mutate(
+    currentUserMutation.mutate(
       {
         bookmarkPostIdArr: newPostIds,
       },
@@ -183,7 +179,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
     return <div>Loading...</div>;
   }
 
-  if (!(postIdParam || id) || !data) return <div>Loading...</div>;
+  if (!postId || !data) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -232,7 +228,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
       </PostSideBox>
       <PostTextBox>{data.text}</PostTextBox>
       <Comment
-        id={(postIdParam || id) ?? ''}
+        id={postId ?? ''}
         dropdown={dropdown}
         setDropdown={setDropdown}
       />

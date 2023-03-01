@@ -20,17 +20,15 @@ function CommentItem({
 }: CommentItemProps) {
   const userRef = doc(dbFirebase, 'users', comment.userId ?? '');
   const userQuery = useFirestoreDocument(['user', comment.userId], userRef);
-
-  if (userQuery.isLoading) {
-    return <div>User Loading...</div>;
-  }
+  const { name: userName, photo: userPhoto } = userQuery.data?.data() ?? {};
 
   const findRep =
     commentRep &&
     commentRep.filter((rep: any) => rep.commentRepId === comment.commentId);
 
-  const userName = userQuery.data?.data()?.name;
-  const userPhoto = userQuery.data?.data()?.photo;
+  if (userQuery.isLoading) {
+    return <div>User Loading...</div>;
+  }
 
   return (
     <>

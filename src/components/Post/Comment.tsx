@@ -22,14 +22,13 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   const { isLoading, data: user } = useAuthUser(['authUser'], auth);
   const [text, setText] = useState('');
   const [repId, setRepId] = useState<string | null>(null);
-  const commentRef = doc(collection(dbFirebase, 'comments'), id);
 
+  const commentRef = doc(collection(dbFirebase, 'comments'), id);
   const commentsQuery = useFirestoreDocument(['comments', id], commentRef);
   const commentMutation = useFirestoreDocumentMutation(commentRef, {
     merge: true,
   });
-  const commentArr = commentsQuery.data?.data()?.commentArr;
-  const commentRep = commentsQuery.data?.data()?.commentRep;
+  const { commentArr, commentRep } = commentsQuery.data?.data() ?? {};
 
   useEffect(() => {
     if (text === '') {
