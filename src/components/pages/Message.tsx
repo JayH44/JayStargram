@@ -23,7 +23,10 @@ function Message() {
   const currentUserRef = doc(dbFirebase, 'users', user?.uid ?? '');
   const currentUserQuery = useFirestoreDocument(
     ['currentUser', user?.uid],
-    currentUserRef
+    currentUserRef,
+    {
+      subscribe: true,
+    }
   );
   const currentUser = currentUserQuery.data?.data();
   const { chatRoomId, name, id: currentUserId } = currentUser ?? {};

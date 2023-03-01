@@ -153,3 +153,6 @@ Custom 으로 firebase 에서 지원하는 count 이용하여 로직구현
 쓰기에러가 문제다
 
 
+invalidateQueries 를 사용해서 refetch 를 하는것을
+devtool 을 통해 확인했음에도 예전데이터를 가져옴
+https://github.com/invertase/react-query-firebase/issues/51

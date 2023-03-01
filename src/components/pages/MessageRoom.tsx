@@ -32,7 +32,13 @@ function MessageRoom() {
   );
 
   const chatRef = doc(dbFirebase, 'messages/' + chatRoomId);
-  const chatRoomQuery = useFirestoreDocument(['chatRoom', chatRoomId], chatRef);
+  const chatRoomQuery = useFirestoreDocument(
+    ['chatRoom', chatRoomId],
+    chatRef,
+    {
+      subscribe: true,
+    }
+  );
   const chatRoomMutation = useFirestoreDocumentMutation(chatRef, {
     merge: true,
   });
@@ -86,6 +92,7 @@ function MessageRoom() {
   }
 
   console.log(messageQuery);
+  console.log(chatUsers);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value);
@@ -123,7 +130,7 @@ function MessageRoom() {
     console.log(userId);
     chatRoomMutation.mutate(
       {
-        chatUsers: chatUsers.push(userId),
+        chatUsers: chatUsers.concat(userId),
       },
       {
         onSuccess() {
