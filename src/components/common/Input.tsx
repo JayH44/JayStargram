@@ -53,6 +53,9 @@ const Placeholder = styled.div<{ active: boolean }>`
   transform-origin: left top;
   transition: all 0.3s ease-in-out;
 
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
   user-select: none;
 
   ${({ active }) =>

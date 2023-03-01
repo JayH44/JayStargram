@@ -168,7 +168,7 @@ function Profile() {
             onClick={deleteImage}></Button>
         ) : (
           <Button
-            text='프로필 사진 전송'
+            text='전송'
             type='button'
             bgColor='rgba(0,0,0,0.6)'
             round
@@ -182,19 +182,25 @@ function Profile() {
       </LeftBox>
       <RightBox>
         <TextInfo>
-          <p>Username: {user?.displayName}</p>
+          <p>
+            <b>Username</b> <br />
+            {user?.displayName}
+          </p>
           <ProfileModBox>
             <Input
               type='text'
               name='name'
               value={text}
+              customplaceholder='이름입력'
               active={text.length > 0}
               onChange={(e) => setText(e.target.value)}
             />
             <Button text='이름수정' onClick={handleName} />
           </ProfileModBox>
-
-          <p>Email: {user?.email}</p>
+          <p>
+            <b>E-mail</b> <br />
+            {user?.email}
+          </p>
         </TextInfo>
       </RightBox>
       {open && (
@@ -212,12 +218,29 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  margin-left: -10px;
+  padding: 10px 0;
   user-select: none;
 `;
+
+const LeftBox = styled.div`
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  margin-left: -10px;
+  gap: 10px;
+  h1 {
+    text-align: center;
+    font-weight: 700;
+  }
+
+  button {
+    width: 70%;
+  }
+`;
 const ImageContainer = styled.label<{ active: boolean }>`
-  width: 200px;
-  height: 200px;
+  width: 70%;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -225,7 +248,7 @@ const ImageContainer = styled.label<{ active: boolean }>`
   justify-content: center;
   cursor: pointer;
   img {
-    height: 100%;
+    width: 100%;
     object-fit: cover;
   }
   svg {
@@ -240,26 +263,36 @@ const ImageContainer = styled.label<{ active: boolean }>`
       `}
   }
 `;
-const LeftBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  h1 {
-    text-align: center;
-    font-weight: 700;
-  }
+
+const RightBox = styled.div`
+  flex-grow: 1;
 `;
-const RightBox = styled.div``;
 const TextInfo = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 30px;
+
+  text-align: center;
+  p {
+    b {
+      font-weight: 700;
+    }
+  }
 `;
 
 const ProfileModBox = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
+
+  div {
+    width: 70%;
+  }
+  button {
+    width: 70%;
+  }
 `;
 Profile.defaultProps = {};
 

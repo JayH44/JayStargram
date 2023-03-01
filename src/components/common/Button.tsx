@@ -40,6 +40,9 @@ const Container = styled.button<ButtonConatinerProps>`
   height: ${({ theme, height }) => height || theme.comHeight};
   font-weight: 600;
   border-radius: ${({ round }) => (round ? '5px' : 0)};
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 Button.defaultProps = {

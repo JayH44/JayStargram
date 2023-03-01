@@ -37,7 +37,6 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.bgColor};
 
   @media (min-width: 800px) {
-    min-width: ${({ theme }) => theme.pageWidth};
     max-width: ${({ theme }) => theme.pageWidth};
   }
 `;
