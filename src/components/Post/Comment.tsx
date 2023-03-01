@@ -11,6 +11,7 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import CommentItem from './CommentItem';
 import { v4 as uuidv4 } from 'uuid';
+import { QueryClient } from 'react-query';
 
 type CommentProps = {
   id: string;
@@ -22,6 +23,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
   const { isLoading, data: user } = useAuthUser(['authUser'], auth);
   const [text, setText] = useState('');
   const [repId, setRepId] = useState<string | null>(null);
+  const queryClient = new QueryClient();
 
   const commentRef = doc(collection(dbFirebase, 'comments'), id);
   const commentsQuery = useFirestoreDocument(['comments', id], commentRef);
@@ -78,6 +80,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         {
           onSuccess() {
             setText('');
+            queryClient.invalidateQueries(['comments', id]);
           },
         }
       );
@@ -98,6 +101,7 @@ function Comment({ id, dropdown, setDropdown }: CommentProps) {
         {
           onSuccess() {
             setText('');
+            queryClient.invalidateQueries(['comments', id]);
           },
         }
       );
