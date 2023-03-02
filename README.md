@@ -10,7 +10,7 @@ React와 TypeScript, Firebase 를 사용하여 인스타그램의
 
 GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 
-기간: 2023년 2월 16일 ~ 2월 28일
+기간: 2023년 2월 16일 ~ 3월 2일
 
 <br />
 
@@ -58,7 +58,7 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 
 <br />
 
-- ### 메시지 채팅 기능 (채팅방 생성, 대화상대 초대, 채팅 표시) - 보수중
+- ### 메시지 채팅 기능 (채팅방 생성, 대화상대 초대, 채팅 표시)
   - **주요 기능**
     - 본인이 참여하고 있는 채팅방 목록 생성 및 가장 최신 내용 표시
     - 대화상대 초대
@@ -708,22 +708,234 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 ### 메시지 채팅 기능 (채팅방 생성, 대화상대 초대, 채팅 표시)
 
 - **채팅방 목록**: Message.tsx, 경로 /message
+
   - **주요 기능**
+
     - **본인이 참여하고 있는 채팅방 목록 생성 및 가장 최신 내용 표시**
-      ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%209.png?alt=media&token=9f6eb0a1-b745-4ca2-ac53-0fe6ce8c08a0)
-- **대화상대 초대**
+
+      ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%209.png?alt=media&token=08936fe3-49a9-4894-974e-6a311692122b)
+
+        <details>
+        <summary>해당 코드</summary>
+            
+          ```tsx
+          <ChatRoomList>
+            {chatRoomId &&
+              chatRoomId.map((cid: string) => (
+                <Link to={cid} key={cid}>
+                  <MessageItem chatRoomId={cid} userId={currentUserId} />
+                </Link>
+              ))}
+          </ChatRoomList>
+          ```
+          
+        </details>
+
+      <br />
+
+    - 가장 최신의 메시지를 받아오기 위해 query 작성
+      <details>
+      <summary>해당 코드</summary>
+            
+            ```tsx
+            const messageColl = collection(
+                dbFirebase,
+                'messages/' + chatRoomId + '/submessages'
+              );
+              const messageQueryRef = query(
+                messageColl,
+                orderBy('created', 'desc'),
+                limit(1)
+              );
+              const messageQuery = useFirestoreQuery(
+                ['messages/recent', chatRoomId],
+                messageQueryRef
+              );
+            
+            ```
+    </details>
+
+    <br />
+
+    - 유저수에 따른 프로필 사진 배치
+      ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2010.png?alt=media&token=aa5094bc-6192-4906-8541-10089be8d235)
+      <details>
+      <summary>해당 코드</summary>
+            
+            ```tsx
+            const ProfileBoxContainer = styled.div`
+              min-width: 40px;
+              min-height: 40px;
+              position: relative;
+            
+              div {
+                position: absolute;
+              }
+            
+              div:nth-child(1) {
+                top: 0;
+                left: 0;
+              }
+            
+              div:nth-child(2) {
+                bottom: -5px;
+                right: -5px;
+              }
+            
+              div:nth-child(3) {
+                bottom: -5px;
+                left: -5px;
+              }
+            
+              div:nth-child(4) {
+                top: 0;
+                right: -7px;
+              }
+            ```
+      </details>
+
+      <br />
+
+- **대화방 생성, 대화 상대 초대** Message.tsx, MessageRoom.tsx, 경로 /message/:chatRoomId
+
+  - 대화방 생성시 방 이름과 + 버튼 클릭으로 생성
+
+    ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2011.png?alt=media&token=eff79115-b165-4d3e-a13e-fb05289b761a)
+
+      <details>
+      <summary>해당 코드</summary>
+          
+          ```tsx
+          const handleChatRoom = () => {
+            if (!text) {
+              alert('채팅방 이름을 입력해주세요');
+              return;
+            }
+            if (!window.confirm('채팅방을 만드시겠습니까?')) {
+              return;
+            }
+            const created = new Date();
+            newChatRoomMutation.mutate(
+              {
+                chatRoomId: newChatRoomId.current,
+                chatRoomName: text,
+                chatUsers: [currentUserId],
+                created,
+              },
+              {
+                onSuccess() {
+                  currentUserMutation.mutate(
+                    {
+                      chatRoomId: chatRoomId.concat(newChatRoomId.current),
+                    },
+                    {
+                      onSuccess() {
+                        setCount(count + 1);
+                        queryClient.removeQueries(['currentUser', user?.uid, count]);
+                        alert('방이 생성되었습니다.');
+                        setTimeout(() => navigate(newChatRoomId.current), 500);
+                      },
+                    }
+                  );
+                },
+              }
+            );
+          };
+          ```
+      
+      </details>
+
+      <br />
 
   - 유저가 없는 채팅방의 경우 따로 버튼 생성
 
-    ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2010.png?alt=media&token=786715c0-89a0-410d-a063-7251bd660765)
+    ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2012.png?alt=media&token=6f6e94cc-3ab2-4779-a8d1-2719f7e6823d)
 
   - 유저가 있는 경우 채팅방 이름을 클릭시 초대
-  
-    ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2011.png?alt=media&token=06e7f495-55e9-489e-963f-1c9b72086de6)
-  
+    ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2013.png?alt=media&token=3cb061ce-e972-47ff-983a-d2515f8490be)
+      <details>
+      <summary>해당 코드</summary>
+          
+          ```tsx
+          <ChatRoomNameBox onClick={handleChatUsers}>
+                    <p>{chatRoomName}:</p>
+                    {showUsers && <SerachResultsForChat onClick={addChatUser} />}
+                  </ChatRoomNameBox>
+          ```
+      </details>
 
-- **채팅방 내부**: MessageRoom.tsx
+      <br />
+
+- **채팅방 내부**: MessageRoom.tsx, 경로 /message/:chatRoomId
+
   - **주요 기능**
+
     - **메시지 Layout**
-    
-      ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2012.png?alt=media&token=65832d84-8581-4b97-92a7-2923908ab6ff)
+
+    - ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2014.png?alt=media&token=7816faca-bdc2-4d54-9f69-6ddd09db7fc6)
+
+    - 최신메시지 100개를 가져온다음 오래된순으로 정렬 후 Layout
+
+      <details>
+      <summary>해당 코드</summary>
+
+      ```tsx
+      const sortMsg = receivedMsg?.docs
+        .map((msg) => msg.data())
+        .sort((a, b) => a.created?.seconds - b.created?.seconds);
+
+      {
+        sortMsg?.length !== 0 && (
+          <MessageList>
+            {sortMsg?.map((msg) => {
+              const isOwner = msg.userId === currnetUser?.uid;
+              return (
+                <MessageItem key={msg.msgId} isOwner={isOwner}>
+                  {isOwner ? (
+                    <p>{msg.text}</p>
+                  ) : (
+                    <>
+                      <ProfileBox userId={msg.userId} imgOnly />{' '}
+                      <p>{msg.text}</p>
+                    </>
+                  )}
+                  {
+                    <>
+                      {msg.isReadArr.indexOf(currnetUser?.uid) === -1 &&
+                        isOwner && <div>1</div>}
+                      {getTimeString(msg.created.seconds)}
+                    </>
+                  }
+                </MessageItem>
+              );
+            })}
+          </MessageList>
+        );
+      }
+      ```
+
+      </details>
+
+      <br />
+
+    - 하단부 메시지 작성부 배치와 메시지 나열후 최신메시지로 갈수있도록 하단에 ref 추가
+      <details>
+      <summary>해당 코드</summary>
+          
+          ```tsx
+          <InputForm onSubmit={handleOnSubmit}>
+                  <Input
+                    ref={inputRef}
+                    type='text'
+                    width='90%'
+                    active={newMessage.length > 0}
+                    value={newMessage}
+                    onChange={handleOnChange}
+                    customplaceholder='메세지를 입력하세요'
+                  />
+                  <button type='submit' disabled={!newMessage}>
+                    <BiSend />
+                  </button>
+                </InputForm>
+          ```
+      </details>
