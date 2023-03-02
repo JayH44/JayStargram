@@ -32,7 +32,7 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 
 ## BackEnd
 
-**Firebase**: (**인증**: Authentification, **DB**: Cloud Firestore, **Storage**, **Hosting**)
+**Firebase V9**: (**인증**: Authentification, **DB**: Cloud Firestore, **Storage**, **Hosting**)
 
 <br />
 
