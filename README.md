@@ -20,8 +20,6 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 
 ## FrontEnd
 
----
-
 **MainTool**: **React** with **TypeScript**
 
 - **SubTool**
@@ -34,9 +32,7 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 
 ## BackEnd
 
----
-
-**Firebase**: (**인증**: Authentification, **DB**: Cloud Firestore, **Storage**, **Hosting**)
+**Firebase V9**: (**인증**: Authentification, **DB**: Cloud Firestore, **Storage**, **Hosting**)
 
 <br />
 
@@ -62,7 +58,7 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 
 <br />
 
-- ### 메시지 채팅 기능 (채팅방 생성, 대화상대 초대, 채팅 표시)
+- ### 메시지 채팅 기능 (채팅방 생성, 대화상대 초대, 채팅 표시) - 보수중
   - **주요 기능**
     - 본인이 참여하고 있는 채팅방 목록 생성 및 가장 최신 내용 표시
     - 대화상대 초대
@@ -71,8 +67,6 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
 <br />
 
 ## 세부 구현 기능 상세
-
----
 
 ### 인증 (회원가입, 로그인)
 
@@ -126,8 +120,6 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
         try {
           const result = await signInWithPopup(auth, googleProvider);
           const credential = GoogleAuthProvider.credentialFromResult(result);
-          if (credential) {
-          }
           return result;
         } catch (error: any) {
           GoogleAuthProvider.credentialFromError(error);
@@ -726,10 +718,12 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
     ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2010.png?alt=media&token=786715c0-89a0-410d-a063-7251bd660765)
 
   - 유저가 있는 경우 채팅방 이름을 클릭시 초대
+  
     ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2011.png?alt=media&token=06e7f495-55e9-489e-963f-1c9b72086de6)
-  -
+  
 
 - **채팅방 내부**: MessageRoom.tsx
   - **주요 기능**
     - **메시지 Layout**
+    
       ![Untitled](https://firebasestorage.googleapis.com/v0/b/jay-stargram-2023.appspot.com/o/ReadMe%2FJayStargram%2FUntitled%2012.png?alt=media&token=65832d84-8581-4b97-92a7-2923908ab6ff)
