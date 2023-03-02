@@ -4,7 +4,15 @@ import {
   useFirestoreDocumentMutation,
   useFirestoreQuery,
 } from '@react-query-firebase/firestore';
-import { collection, doc, limit, orderBy, query } from 'firebase/firestore';
+import {
+  arrayUnion,
+  collection,
+  doc,
+  limit,
+  orderBy,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -25,6 +33,7 @@ function MessageRoom() {
   const [newMessage, setNewMessage] = useState('');
   const inputRef: React.ForwardedRef<HTMLInputElement> = useRef(null);
   const bottomListRef: React.RefObject<HTMLDivElement> = useRef(null);
+  const [newUser, setNewUser] = useState('');
   const [showUsers, setShowUsers] = useState(false);
   const { isLoading: currentUserLoading, data: currnetUser } = useAuthUser(
     ['authUser'],
@@ -87,6 +96,17 @@ function MessageRoom() {
     }
   }, [mutation]);
 
+  useEffect(() => {
+    if (newUser) {
+      const newUserRef = doc(dbFirebase, 'users/' + newUser);
+      updateDoc(newUserRef, {
+        chatRoomId: arrayUnion(chatRoomId),
+      }).then(() => {
+        alert('사용자 초대가 완료되었습니다.');
+      });
+    }
+  }, [newUser, chatRoomId]);
+
   if (currentUserLoading || isLoading) {
     return <div>메세지 불러오기중 ... </div>;
   }
@@ -135,6 +155,7 @@ function MessageRoom() {
       {
         onSuccess() {
           alert(userId + '님이 초대가 되었습니다.');
+          setNewUser(userId);
         },
       }
     );

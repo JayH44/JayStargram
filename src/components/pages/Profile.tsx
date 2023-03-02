@@ -11,6 +11,7 @@ import { collection, doc } from 'firebase/firestore';
 import { useFirestoreDocumentMutation } from '@react-query-firebase/firestore';
 import Input from '../common/Input';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 
 function Profile() {
   console.log('pf');
@@ -25,6 +26,7 @@ function Profile() {
   const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [text, setText] = useState('');
   const [deleteAction, setDeleteAction] = useState(false);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const logoutMutation = useAuthSignOut(auth, {
@@ -89,6 +91,7 @@ function Profile() {
         {
           onSuccess() {
             alert('프로필 사진 설정이 완료되었습니다.');
+            queryClient.refetchQueries(['currentUser', user.uid, 0]);
             setCroppedFiles([]);
             setFiles([]);
             setDeleteAction(false);
@@ -113,6 +116,7 @@ function Profile() {
       {
         onSuccess() {
           alert('프로필 이름 설정이 완료되었습니다.');
+          queryClient.refetchQueries(['currentUser', user.uid, 0]);
           setText('');
         },
       }
@@ -230,6 +234,8 @@ const LeftBox = styled.div`
   flex-grow: 1;
   flex-direction: column;
   align-items: center;
+
+  width: 60%;
   margin-left: -10px;
   gap: 10px;
   h1 {

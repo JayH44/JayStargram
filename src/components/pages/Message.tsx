@@ -4,7 +4,7 @@ import {
   useFirestoreDocumentMutation,
 } from '@react-query-firebase/firestore';
 import { doc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { auth, dbFirebase } from '../../firebase';
@@ -12,31 +12,40 @@ import MessageItem from '../Messages/MessageItem';
 import { BiPlusCircle } from 'react-icons/bi';
 import { v4 as uuidv4 } from 'uuid';
 import Input from '../common/Input';
+import { useQueryClient } from 'react-query';
 
 function Message() {
   console.log('ms');
 
   const { isLoading: userLoading, data: user } = useAuthUser('authUser', auth);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [text, setText] = useState('');
-
+  const [count, setCount] = useState(0);
   const currentUserRef = doc(dbFirebase, 'users', user?.uid ?? '');
   const currentUserQuery = useFirestoreDocument(
-    ['currentUser', user?.uid],
-    currentUserRef,
-    {
-      subscribe: true,
-    }
+    ['currentUser', user?.uid, count],
+    currentUserRef
   );
   const currentUser = currentUserQuery.data?.data();
   const { chatRoomId, name, id: currentUserId } = currentUser ?? {};
+
+  useEffect(() => {
+    if (currentUserQuery.isLoading) return;
+    if (chatRoomId) {
+      setCount(chatRoomId.length);
+    } else {
+      alert('프로필 등록을 해주세요');
+      navigate('/profile');
+    }
+  }, [currentUserQuery, chatRoomId, navigate]);
 
   const currentUserMutation = useFirestoreDocumentMutation(currentUserRef, {
     merge: true,
   });
 
-  const newChatRoomId = uuidv4();
-  const newChatRoomRef = doc(dbFirebase, 'messages', newChatRoomId);
+  const newChatRoomId = useRef(uuidv4());
+  const newChatRoomRef = doc(dbFirebase, 'messages', newChatRoomId.current);
   const newChatRoomMutation = useFirestoreDocumentMutation(newChatRoomRef, {
     merge: true,
   });
@@ -54,11 +63,10 @@ function Message() {
     if (!window.confirm('채팅방을 만드시겠습니까?')) {
       return;
     }
-
-    const created = new Date(Date.now());
+    const created = new Date();
     newChatRoomMutation.mutate(
       {
-        chatRoomId: newChatRoomId,
+        chatRoomId: newChatRoomId.current,
         chatRoomName: text,
         chatUsers: [currentUserId],
         created,
@@ -67,11 +75,14 @@ function Message() {
         onSuccess() {
           currentUserMutation.mutate(
             {
-              chatRoomId: chatRoomId.concat(newChatRoomId),
+              chatRoomId: chatRoomId.concat(newChatRoomId.current),
             },
             {
               onSuccess() {
-                navigate(newChatRoomId);
+                setCount(count + 1);
+                queryClient.removeQueries(['currentUser', user?.uid, count]);
+                alert('방이 생성되었습니다.');
+                setTimeout(() => navigate(newChatRoomId.current), 500);
               },
             }
           );

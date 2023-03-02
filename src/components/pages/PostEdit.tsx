@@ -1,7 +1,8 @@
+import { uuidv4 } from '@firebase/util';
 import { useAuthUser } from '@react-query-firebase/auth';
 import { useFirestoreDocumentMutation } from '@react-query-firebase/firestore';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -21,8 +22,10 @@ function PostEdit() {
   const [idx, setIdx] = useState(0);
   const [text, setText] = useState('');
   const navigate = useNavigate();
+  const docRefId = useRef(uuidv4());
   const ref = doc(
-    collection(dbFirebase, 'posts/', user?.uid ?? '', 'subposts')
+    collection(dbFirebase, 'posts/', user?.uid ?? '', 'subposts'),
+    docRefId.current
   );
   const mutation = useFirestoreDocumentMutation(ref);
   const commentRef = doc(dbFirebase, `comments/${ref.id}`);
@@ -81,7 +84,7 @@ function PostEdit() {
       photoURL.push(res);
     }
 
-    const created = new Date(Date.now());
+    const created = new Date();
     mutation.mutate(
       {
         postId: ref.id,

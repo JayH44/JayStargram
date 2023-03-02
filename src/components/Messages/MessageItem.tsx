@@ -39,18 +39,12 @@ function MessageItem({ chatRoomId, userId }: MessageItemProps) {
   );
   const messageQuery = useFirestoreQuery(
     ['messages/recent', chatRoomId],
-    messageQueryRef,
-    {
-      subscribe: true,
-    }
+    messageQueryRef
   );
 
   let newChatUsers;
   if (chatUsers?.length > 1) {
     newChatUsers = chatUsers.filter((uid: string) => uid !== userId);
-    // newChatUsers = chatUsers;
-    // newChatUsers.push('AaIAFpTPXDXfaaUKtYXNY7pPLU23');
-    // newChatUsers.push('WERtgDdberX9ynZp8uDBnKlrgOW2');
   } else {
     newChatUsers = [];
   }
@@ -121,7 +115,7 @@ const ProfileBoxContainer = styled.div`
 
   div:nth-child(3) {
     bottom: -5px;
-    left: 0;
+    left: -5px;
   }
 
   div:nth-child(4) {

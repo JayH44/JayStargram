@@ -90,6 +90,7 @@ function PostDetail({ postIdParam, userIdParam }: PostDetailProps) {
   });
 
   const likeMutation = useFirestoreTransaction(dbFirebase, async (tsx) => {
+    console.log(docref);
     const doc = await tsx.get(docref);
     const likeUserArr = doc.data()?.likeUserArr;
 
