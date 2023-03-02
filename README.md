@@ -120,8 +120,6 @@ GitHub 코드 주소: [[Here](https://github.com/JayH44/JayStargram)]
         try {
           const result = await signInWithPopup(auth, googleProvider);
           const credential = GoogleAuthProvider.credentialFromResult(result);
-          if (credential) {
-          }
           return result;
         } catch (error: any) {
           GoogleAuthProvider.credentialFromError(error);
